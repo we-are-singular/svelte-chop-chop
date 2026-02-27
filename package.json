@@ -1,6 +1,6 @@
 {
   "name": "@we-are-singular/svelte-chop-chop",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Headless-first image cropping and editing SDK for Svelte 5. Zero runtime dependencies.",
   "type": "module",
   "license": "MIT",
