@@ -4,10 +4,11 @@
   Positioned to cover imageBounds; cutout at rect.
 -->
 <script lang="ts">
-  import type { Rect } from '../core/types.js';
+  import type { Rect } from "../core/types.js";
 
   let { rect, imageBounds }: { rect: Rect; imageBounds: Rect } = $props();
 
+  const maskId = $state(`chop-crop-mask-${crypto.randomUUID()}`);
   const maskX = $derived(rect.x - imageBounds.x);
   const maskY = $derived(rect.y - imageBounds.y);
 </script>
@@ -21,13 +22,13 @@
   style:height="{imageBounds.height}px"
 >
   <defs>
-    <mask id="chop-crop-mask">
+    <mask id={maskId}>
       <rect x="0" y="0" width="100%" height="100%" fill="white" />
       <rect
-        x="{maskX}"
-        y="{maskY}"
-        width="{rect.width}"
-        height="{rect.height}"
+        x={maskX}
+        y={maskY}
+        width={rect.width}
+        height={rect.height}
         fill="black"
       />
     </mask>
@@ -38,7 +39,7 @@
     width="100%"
     height="100%"
     fill="var(--chop-overlay, rgba(0, 0, 0, 0.55))"
-    mask="url(#chop-crop-mask)"
+    mask="url(#{maskId})"
   />
 </svg>
 

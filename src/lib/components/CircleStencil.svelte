@@ -3,9 +3,9 @@
   Same contract as CropStencil, but with circular mask.
 -->
 <script lang="ts">
-  import type { HandlePosition, Point, StencilProps } from '../core/types.js';
-  import { createDragHandler } from '../core/interactions.js';
-  import DragHandle from './DragHandle.svelte';
+  import type { HandlePosition, Point, StencilProps } from "../core/types.js";
+  import { createDragHandler } from "../core/interactions.js";
+  import DragHandle from "./DragHandle.svelte";
 
   let {
     rect,
@@ -29,11 +29,13 @@
     onMove: (delta) => onmove(delta),
   });
 
+  const maskId = $state(`chop-circle-mask-${crypto.randomUUID()}`);
+
   // The circle is inscribed in a 1:1 square bounding rect.
   // cx/cy are used for the circle border positioning only.
   const size = $derived(Math.min(rect.width, rect.height));
-  const cx   = $derived(rect.width / 2);
-  const cy   = $derived(rect.height / 2);
+  const cx = $derived(rect.width / 2);
+  const cy = $derived(rect.height / 2);
 </script>
 
 <div
@@ -51,14 +53,9 @@
 >
   <svg class="chop-circle-overlay" aria-hidden="true">
     <defs>
-      <mask id="chop-circle-mask">
+      <mask id={maskId}>
         <rect x="0" y="0" width="100%" height="100%" fill="white" />
-        <circle
-          cx="{cx}"
-          cy="{cy}"
-          r="{size / 2}"
-          fill="black"
-        />
+        <circle {cx} {cy} r={size / 2} fill="black" />
       </mask>
     </defs>
     <rect
@@ -67,7 +64,7 @@
       width="100%"
       height="100%"
       fill="var(--chop-overlay, rgba(0, 0, 0, 0.55))"
-      mask="url(#chop-circle-mask)"
+      mask="url(#{maskId})"
     />
   </svg>
 
@@ -82,10 +79,34 @@
   ></div>
 
   <!-- Handles at the 4 bounding-box corners — correct for a 1:1 square crop with circular mask -->
-  <DragHandle position="nw" {onresize} {onresizestart} {onresizeend} size={16} />
-  <DragHandle position="ne" {onresize} {onresizestart} {onresizeend} size={16} />
-  <DragHandle position="sw" {onresize} {onresizestart} {onresizeend} size={16} />
-  <DragHandle position="se" {onresize} {onresizestart} {onresizeend} size={16} />
+  <DragHandle
+    position="nw"
+    {onresize}
+    {onresizestart}
+    {onresizeend}
+    size={16}
+  />
+  <DragHandle
+    position="ne"
+    {onresize}
+    {onresizestart}
+    {onresizeend}
+    size={16}
+  />
+  <DragHandle
+    position="sw"
+    {onresize}
+    {onresizestart}
+    {onresizeend}
+    size={16}
+  />
+  <DragHandle
+    position="se"
+    {onresize}
+    {onresizestart}
+    {onresizeend}
+    size={16}
+  />
 </div>
 
 <style>
