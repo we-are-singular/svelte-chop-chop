@@ -23,6 +23,7 @@
     sizeConstraints,
     cropOutsideImage = false,
     initialCrop,
+    initialCropScale = 1,
     grid = "rule-of-thirds",
     gridOnlyActive = true,
     transitions = true,
@@ -48,6 +49,8 @@
     sizeConstraints?: import("../core/types.js").SizeConstraints;
     cropOutsideImage?: boolean;
     initialCrop?: Partial<Rect>;
+    /** Initial crop as fraction of image (0–1). 1 = full image, 0.8 = 80% centered. Default 1. */
+    initialCropScale?: number;
     grid?: import("../core/types.js").GridType;
     gridOnlyActive?: boolean;
     transitions?: boolean;
@@ -89,6 +92,9 @@
     },
     get initialCrop() {
       return initialCrop;
+    },
+    get initialCropScale() {
+      return initialCropScale;
     },
     get grid() {
       return grid;

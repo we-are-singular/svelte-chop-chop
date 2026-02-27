@@ -39,8 +39,8 @@
 <h1>Cropper</h1>
 <p class="lead">
   The <code>Cropper</code>
-   component provides interactive image cropping with a draggable stencil, zoom,
-  pan, keyboard navigation, and touch/pinch support.
+  component provides interactive image cropping with a draggable stencil, zoom, pan,
+  keyboard navigation, and touch/pinch support.
 </p>
 
 <h2>Import</h2>
@@ -117,7 +117,7 @@
       <td><code>null</code></td>
       <td>
         Lock width/height ratio. <code>null</code>
-         allows free crop.
+        allows free crop.
       </td>
     </tr>
     <tr>
@@ -148,6 +148,15 @@
       <td><code>Partial&lt;Rect&gt;</code></td>
       <td>—</td>
       <td>Initial crop rectangle. If omitted, crop fits the image.</td>
+    </tr>
+    <tr>
+      <td><code>initialCropScale</code></td>
+      <td><code>number</code></td>
+      <td><code>1</code></td>
+      <td>
+        Initial crop as fraction of image (0–1). <code>0.8</code>
+        = 80% centered. Applied when changing aspect ratio or stencil too.
+      </td>
     </tr>
   </tbody>
 </table>
@@ -203,7 +212,7 @@
       <td><code>CropStencil</code></td>
       <td>
         Stencil component. Pass <code>CircleStencil</code>
-         for circular crop.
+        for circular crop.
       </td>
     </tr>
     <tr>
@@ -364,7 +373,7 @@
 
 <p>
   Every coordinate callback and binding provides a <code>CropCoordinates</code>
-   object with three representations of the same crop region:
+  object with three representations of the same crop region:
 </p>
 
 <pre><code>interface CropCoordinates &#123;
@@ -382,7 +391,7 @@
   Use the built-in <code>CropStencil</code>
   (rectangular) or
   <code>CircleStencil</code>
-   (circular mask):
+  (circular mask):
 </p>
 
 <DocLiveExample
@@ -411,7 +420,7 @@
   <code>1:1</code>
   aspect ratio regardless of the
   <code>aspectRatio</code>
-   prop.
+  prop.
 </p>
 
 <h2>Export</h2>
@@ -484,7 +493,7 @@
   <code>coverPhoto</code>
   (16:9, min 1200px),
   <code>productImage</code>
-   (1:1, PNG).
+  (1:1, PNG).
 </p>
 
 <h2>Keyboard shortcuts</h2>
@@ -526,5 +535,5 @@
 
 <p>
   See the <a href="/docs/custom-stencil">Custom Stencil</a>
-   guide for details on writing your own stencil component.
+  guide for details on writing your own stencil component.
 </p>

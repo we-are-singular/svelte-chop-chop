@@ -78,16 +78,17 @@ npm install @we-are-singular/svelte-chop-chop
 
 ## Cropper Props
 
-| Prop              | Type                                                     | Default            | Description                                          |
-| ----------------- | -------------------------------------------------------- | ------------------ | ---------------------------------------------------- |
-| `src`             | `ImageSource`                                            | —                  | URL, data URL, `File`, `Blob`, or `HTMLImageElement` |
-| `aspectRatio`     | `number \| { min?: number; max?: number } \| null`       | `null`             | Aspect ratio constraint                              |
-| `sizeConstraints` | `SizeConstraints`                                        | —                  | Min/max width/height in pixels                       |
-| `grid`            | `"none" \| "rule-of-thirds" \| "grid" \| "golden-ratio"` | `"rule-of-thirds"` | Grid overlay                                         |
-| `transitions`     | `boolean`                                                | `true`             | CSS transitions                                      |
-| `stencil`         | `Component`                                              | `CropStencil`      | Custom stencil component                             |
-| `readOnly`        | `boolean`                                                | `false`            | Disable interaction                                  |
-| `class` / `style` | `string`                                                 | `''`               | Root element styling                                 |
+| Prop               | Type                                                     | Default            | Description                                                 |
+| ------------------ | -------------------------------------------------------- | ------------------ | ----------------------------------------------------------- |
+| `src`              | `ImageSource`                                            | —                  | URL, data URL, `File`, `Blob`, or `HTMLImageElement`        |
+| `aspectRatio`      | `number \| { min?: number; max?: number } \| null`       | `null`             | Aspect ratio constraint                                     |
+| `sizeConstraints`  | `SizeConstraints`                                        | —                  | Min/max width/height in pixels                              |
+| `initialCropScale` | `number`                                                 | `1`                | Initial crop as fraction of image (0–1). 0.8 = 80% centered |
+| `grid`             | `"none" \| "rule-of-thirds" \| "grid" \| "golden-ratio"` | `"rule-of-thirds"` | Grid overlay                                                |
+| `transitions`      | `boolean`                                                | `true`             | CSS transitions                                             |
+| `stencil`          | `Component`                                              | `CropStencil`      | Custom stencil component                                    |
+| `readOnly`         | `boolean`                                                | `false`            | Disable interaction                                         |
+| `class` / `style`  | `string`                                                 | `''`               | Root element styling                                        |
 
 **Bindable:** `coordinates` (`CropCoordinates`), `transforms` (`TransformState`)
 **Events:** `onchange`, `onready`, `onerror`

@@ -90,6 +90,7 @@ Lightweight cropping-only component.
 | `sizeConstraints` | `SizeConstraints` | — | Min/max width/height in pixels |
 | `cropOutsideImage` | `boolean` | `false` | Allow crop area outside image bounds |
 | `initialCrop` | `Partial<Rect>` | — | Initial crop position/size |
+| `initialCropScale` | `number` | `1` | Initial crop as fraction of image (0–1). 0.8 = 80% centered. Applied when changing aspect ratio or stencil. |
 | `grid` | `"none" \| "rule-of-thirds" \| "grid" \| "golden-ratio"` | `"rule-of-thirds"` | Grid overlay type |
 | `gridOnlyActive` | `boolean` | `true` | Show grid only during interaction |
 | `transitions` | `boolean` | `true` | Enable CSS transitions |
@@ -147,6 +148,7 @@ Full-featured image editor with plugin-driven toolbar.
 | `src` | `ImageSource` | — | Image source |
 | `plugins` | `ChopPlugin[]` | `[]` | Plugin instances |
 | `aspectRatio` | `AspectRatio` | `null` | Initial crop aspect ratio |
+| `initialCropScale` | `number` | `0.8` | Initial crop as fraction of image (0–1). 0.8 = 80% centered. Applied when changing aspect ratio or stencil. |
 | `aspectRatioPresets` | `AspectRatioPreset[]` | — | Aspect ratio selector options |
 | `exportDefaults` | `ExportOptions` | — | Default export settings |
 | `class` | `string` | `''` | CSS class |
@@ -210,6 +212,7 @@ const result = await editor.export({
 {
   src?: ImageSource;
   initialCrop?: Partial<Rect>;
+  initialCropScale?: number;  // Default 0.8 for ImageEditor
   initialTransforms?: Partial<TransformState>;
   aspectRatio?: AspectRatio;
   sizeConstraints?: SizeConstraints;

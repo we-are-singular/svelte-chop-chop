@@ -73,6 +73,8 @@ const DEFAULT_WATERMARK: WatermarkSettings = {
 export interface ImageEditorOptions {
   src?: ImageSource;
   initialCrop?: Partial<Rect>;
+  /** Initial crop as fraction of image (0–1). 1 = full image, 0.8 = 80% centered. Default 0.8 for ImageEditor. */
+  initialCropScale?: number;
   initialTransforms?: Partial<TransformState>;
   aspectRatio?: AspectRatio;
   sizeConstraints?: import("../core/types.js").SizeConstraints;
@@ -93,6 +95,7 @@ export function createImageEditor(
     aspectRatio: options.aspectRatio ?? null,
     sizeConstraints: options.sizeConstraints,
     initialCrop: options.initialCrop,
+    initialCropScale: options.initialCropScale ?? 0.8,
   });
   const transform = createTransformEngine({
     initialTransforms: options.initialTransforms,
@@ -392,7 +395,12 @@ export function createImageEditor(
     const transformsVal = transform.transforms;
     // Explicitly extract plain values — Svelte $state proxies can't be JSON-serialized via spread alone
     history.push(label, {
-      crop: { x: cropVal.x, y: cropVal.y, width: cropVal.width, height: cropVal.height },
+      crop: {
+        x: cropVal.x,
+        y: cropVal.y,
+        width: cropVal.width,
+        height: cropVal.height,
+      },
       transforms: {
         rotation: transformsVal.rotation,
         flipX: transformsVal.flipX,

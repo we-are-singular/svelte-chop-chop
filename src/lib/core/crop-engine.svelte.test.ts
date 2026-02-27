@@ -1,11 +1,11 @@
-import { describe, it, expect } from 'vitest';
-import { createCropEngine } from './crop-engine.svelte.js';
-import type { CropEngineOptions } from './crop-engine.svelte.js';
+import { describe, it, expect } from "vitest";
+import { createCropEngine } from "./crop-engine.svelte.js";
+import type { CropEngineOptions } from "./crop-engine.svelte.js";
 
 /** Wrap engine creation in $effect.root to satisfy Svelte 5 reactive context requirement. */
 function run(
   fn: (engine: ReturnType<typeof createCropEngine>) => void,
-  opts: CropEngineOptions = {}
+  opts: CropEngineOptions = {},
 ) {
   const cleanup = $effect.root(() => {
     const engine = createCropEngine(opts);
@@ -21,7 +21,7 @@ function runWithImage(
   imageW = 800,
   imageH = 600,
   containerW = 400,
-  containerH = 300
+  containerH = 300,
 ) {
   run((engine) => {
     engine.setImageSize({ width: imageW, height: imageH });
@@ -30,22 +30,56 @@ function runWithImage(
   }, opts);
 }
 
-describe('createCropEngine', () => {
-  it('initialises with default state', () => {
+describe("createCropEngine", () => {
+  it("initialises with default state", () => {
     run((engine) => {
       expect(engine.crop).toEqual({ x: 0, y: 0, width: 0, height: 0 });
       expect(engine.interacting).toBe(false);
     });
   });
 
-  it('sets image and container size and initialises crop', () => {
+  it("sets image and container size and initialises crop", () => {
     runWithImage((engine) => {
       expect(engine.crop.width).toBeGreaterThan(0);
       expect(engine.crop.height).toBeGreaterThan(0);
     });
   });
 
-  it('fitToImage fills the image bounds', () => {
+  it("setAspectRatio respects initialCropScale", () => {
+    runWithImage(
+      (engine) => {
+        engine.setAspectRatio(16 / 9);
+        const { imageRect, crop } = engine;
+        expect(crop.width / crop.height).toBeCloseTo(16 / 9, 1);
+        expect(crop.width).toBeLessThan(imageRect.width);
+        expect(crop.height).toBeLessThan(imageRect.height);
+      },
+      { initialCropScale: 0.8 },
+    );
+  });
+
+  it("initialCropScale 0.8 starts crop at 80% of image bounds", () => {
+    runWithImage(
+      (engine) => {
+        const { imageRect, crop } = engine;
+        const expectedW = imageRect.width * 0.8;
+        const expectedH = imageRect.height * 0.8;
+        expect(crop.width).toBeCloseTo(expectedW, 0);
+        expect(crop.height).toBeCloseTo(expectedH, 0);
+        expect(crop.x).toBeCloseTo(
+          imageRect.x + (imageRect.width - expectedW) / 2,
+          0,
+        );
+        expect(crop.y).toBeCloseTo(
+          imageRect.y + (imageRect.height - expectedH) / 2,
+          0,
+        );
+      },
+      { initialCropScale: 0.8 },
+    );
+  });
+
+  it("fitToImage fills the image bounds", () => {
     runWithImage((engine) => {
       engine.fitToImage();
       expect(engine.crop.width).toBeCloseTo(engine.imageRect.width, 0);
@@ -53,18 +87,18 @@ describe('createCropEngine', () => {
     });
   });
 
-  it('fitToImage respects aspect ratio', () => {
+  it("fitToImage respects aspect ratio", () => {
     runWithImage(
       (engine) => {
         engine.fitToImage();
         const ratio = engine.crop.width / engine.crop.height;
         expect(ratio).toBeCloseTo(1, 1);
       },
-      { aspectRatio: 1 }
+      { aspectRatio: 1 },
     );
   });
 
-  it('moveBy shifts crop position', () => {
+  it("moveBy shifts crop position", () => {
     runWithImage((engine) => {
       // Set a smaller crop so there's room to move
       engine.setCrop({
@@ -81,16 +115,16 @@ describe('createCropEngine', () => {
     });
   });
 
-  it('moveBy clamps to bounds', () => {
+  it("moveBy clamps to bounds", () => {
     runWithImage((engine) => {
       engine.moveBy({ x: 9999, y: 9999 });
       expect(engine.crop.x + engine.crop.width).toBeLessThanOrEqual(
-        engine.imageRect.x + engine.imageRect.width + 1
+        engine.imageRect.x + engine.imageRect.width + 1,
       );
     });
   });
 
-  it('resizeBy adjusts width from east handle', () => {
+  it("resizeBy adjusts width from east handle", () => {
     runWithImage((engine) => {
       // Shrink crop to give room to grow
       engine.setCrop({
@@ -101,20 +135,20 @@ describe('createCropEngine', () => {
       });
 
       const widthBefore = engine.crop.width;
-      engine.resizeBy('e', { x: 10, y: 0 });
+      engine.resizeBy("e", { x: 10, y: 0 });
       expect(engine.crop.width).toBeCloseTo(widthBefore + 10, 0);
     });
   });
 
-  it('resizeBy ignores invalid handle', () => {
+  it("resizeBy ignores invalid handle", () => {
     runWithImage((engine) => {
       const before = { ...engine.crop };
-      engine.resizeBy('invalid', { x: 10, y: 10 });
+      engine.resizeBy("invalid", { x: 10, y: 10 });
       expect(engine.crop).toEqual(before);
     });
   });
 
-  it('setAspectRatio refits crop', () => {
+  it("setAspectRatio refits crop", () => {
     runWithImage((engine) => {
       engine.setAspectRatio(16 / 9);
       const ratio = engine.crop.width / engine.crop.height;
@@ -122,18 +156,18 @@ describe('createCropEngine', () => {
     });
   });
 
-  it('setAspectRatio no-ops when value unchanged', () => {
+  it("setAspectRatio no-ops when value unchanged", () => {
     runWithImage(
       (engine) => {
         const before = { ...engine.crop };
         engine.setAspectRatio(1);
         expect(engine.crop).toEqual(before);
       },
-      { aspectRatio: 1 }
+      { aspectRatio: 1 },
     );
   });
 
-  it('scaleBy enlarges crop from center', () => {
+  it("scaleBy enlarges crop from center", () => {
     runWithImage((engine) => {
       engine.setCrop({
         x: engine.imageRect.x + 50,
@@ -148,7 +182,7 @@ describe('createCropEngine', () => {
     });
   });
 
-  it('scaleBy rejects below minimum size', () => {
+  it("scaleBy rejects below minimum size", () => {
     runWithImage((engine) => {
       engine.setCrop({ x: 100, y: 100, width: 25, height: 25 });
       const before = { ...engine.crop };
@@ -157,7 +191,7 @@ describe('createCropEngine', () => {
     });
   });
 
-  it('setInteracting toggles interacting state', () => {
+  it("setInteracting toggles interacting state", () => {
     run((engine) => {
       expect(engine.interacting).toBe(false);
       engine.setInteracting(true);
@@ -167,24 +201,24 @@ describe('createCropEngine', () => {
     });
   });
 
-  it('coordinates are computed correctly', () => {
+  it("coordinates are computed correctly", () => {
     runWithImage((engine) => {
       const coords = engine.coordinates;
-      expect(coords).toHaveProperty('normalized');
-      expect(coords).toHaveProperty('pixels');
-      expect(coords).toHaveProperty('viewport');
+      expect(coords).toHaveProperty("normalized");
+      expect(coords).toHaveProperty("pixels");
+      expect(coords).toHaveProperty("viewport");
       expect(coords.normalized.width).toBeGreaterThan(0);
       expect(coords.pixels.width).toBeGreaterThan(0);
     });
   });
 
-  it('cropOutsideImage allows crop beyond image bounds', () => {
+  it("cropOutsideImage allows crop beyond image bounds", () => {
     runWithImage(
       (engine) => {
         engine.setCrop({ x: -100, y: -100, width: 600, height: 500 });
         expect(engine.crop.width).toBe(600);
       },
-      { cropOutsideImage: true }
+      { cropOutsideImage: true },
     );
   });
 });

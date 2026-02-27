@@ -39,6 +39,8 @@ export interface CropperOptions {
   sizeConstraints?: SizeConstraints;
   cropOutsideImage?: boolean;
   initialCrop?: Partial<Rect>;
+  /** Initial crop as fraction of image (0–1). 1 = full image, 0.8 = 80% centered. Default 1. */
+  initialCropScale?: number;
   grid?: GridType;
   transitions?: boolean;
   readOnly?: boolean;
@@ -81,6 +83,7 @@ export function createCropper(options: CropperOptions = {}): CropperReturn {
     aspectRatio: options.aspectRatio ?? null,
     sizeConstraints: options.sizeConstraints,
     initialCrop: options.initialCrop,
+    initialCropScale: options.initialCropScale,
     cropOutsideImage: options.cropOutsideImage,
     onChange: () => {},
   });

@@ -20,8 +20,8 @@
 <h1>ImageEditor</h1>
 <p class="lead">
   The all-in-one <code>ImageEditor</code>
-   component provides a full-featured editing toolbar driven by a plugin system.
-  Crop, filter, tune, resize, frame and watermark — all in one component.
+  component provides a full-featured editing toolbar driven by a plugin system. Crop,
+  filter, tune, resize, frame and watermark — all in one component.
 </p>
 
 <h2>Import</h2>
@@ -68,6 +68,15 @@
       <td>Initial crop aspect ratio.</td>
     </tr>
     <tr>
+      <td><code>initialCropScale</code></td>
+      <td><code>number</code></td>
+      <td><code>0.8</code></td>
+      <td>
+        Initial crop as fraction of image (0–1). <code>0.8</code>
+        = 80% centered. Applied when changing aspect ratio or stencil too.
+      </td>
+    </tr>
+    <tr>
       <td><code>class</code></td>
       <td><code>string</code></td>
       <td><code>''</code></td>
@@ -108,7 +117,7 @@
 
 <p>
   Use <code>ImageEditor</code>
-   without plugins for just crop and rotate:
+  without plugins for just crop and rotate:
 </p>
 
 <DocLiveExample
@@ -247,7 +256,7 @@
 
 <p>
   For full UI control, use <code>createImageEditor</code>
-   from the headless export. It returns a reactive state object with all actions:
+  from the headless export. It returns a reactive state object with all actions:
 </p>
 
 <pre><code>import &#123; createImageEditor &#125; from '@we-are-singular/svelte-chop-chop/headless';
@@ -327,7 +336,7 @@ const result = await editor.export(&#123;
       <td><code>'rect'</code></td>
       <td>
         Crop shape. <code>'circle'</code>
-         applies a circular mask with transparent corners. Automatically uses PNG
+        applies a circular mask with transparent corners. Automatically uses PNG
         if JPEG was selected (JPEG doesn't support transparency).
       </td>
     </tr>
