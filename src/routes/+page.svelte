@@ -211,6 +211,9 @@
     <a href="https://www.npmjs.com/package/@we-are-singular/svelte-chop-chop" target="_blank" rel="noopener noreferrer">npm</a>
     · Built with Svelte 5
   </p>
+  <p class="footer-singular">
+    Made with ❤️ by <a href="https://wearesingular.com" target="_blank" rel="noopener noreferrer">Singular</a>
+  </p>
 </footer>
 
 <style>
@@ -525,5 +528,10 @@
   .site-footer a:hover {
     color: rgba(255, 255, 255, 0.8);
     text-decoration: underline;
+  }
+
+  .footer-singular {
+    margin: 0.35rem 0 0;
+    font-size: 0.8rem;
   }
 </style>
