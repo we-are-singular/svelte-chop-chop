@@ -189,7 +189,13 @@
 </section>
 
 <footer class="site-footer">
-  <p>MIT License · Built with Svelte 5</p>
+  <p>
+    MIT License ·
+    <a href="https://github.com/we-are-singular/svelte-chop-chop" target="_blank" rel="noopener noreferrer">GitHub</a>
+    ·
+    <a href="https://www.npmjs.com/package/svelte-chop-chop" target="_blank" rel="noopener noreferrer">npm</a>
+    · Built with Svelte 5
+  </p>
 </footer>
 
 <style>
@@ -457,5 +463,15 @@
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.3);
     border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .site-footer a {
+    color: rgba(255, 255, 255, 0.45);
+    text-decoration: none;
+  }
+
+  .site-footer a:hover {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: underline;
   }
 </style>

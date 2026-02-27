@@ -3,6 +3,9 @@
 > Headless-first image cropping and editing SDK for Svelte 5.  
 > Zero dependencies beyond Svelte.
 
+[![npm](https://img.shields.io/npm/v/svelte-chop-chop)](https://www.npmjs.com/package/svelte-chop-chop)
+[![license](https://img.shields.io/github/license/we-are-singular/svelte-chop-chop)](LICENSE)
+
 **[Documentation & Demo →](https://svelte-chop-chop.pages.dev)**
 
 ---
