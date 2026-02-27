@@ -14,7 +14,7 @@
   "homepage": "https://svelte-chop-chop.pages.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/we-are-singular/svelte-chop-chop.git"
+    "url": "git+https://github.com/we-are-singular/svelte-chop-chop.git"
   },
   "bugs": {
     "url": "https://github.com/we-are-singular/svelte-chop-chop/issues"
