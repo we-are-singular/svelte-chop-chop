@@ -1,0 +1,17 @@
+/**
+ * svelte-chop-chop — Minimal theme
+ */
+
+.chop-editor,
+.chop-cropper {
+  --chop-bg: #fff;
+  --chop-overlay: rgba(0, 0, 0, 0.4);
+  --chop-stencil-border: rgba(0, 0, 0, 0.5);
+  --chop-stencil-border-active: #000;
+  --chop-handle-color: #000;
+  --chop-grid-color: rgba(0, 0, 0, 0.2);
+  --chop-toolbar-bg: #f5f5f5;
+  --chop-toolbar-color: #333;
+  --chop-toolbar-active: #0066cc;
+  --chop-border-radius: 0;
+}

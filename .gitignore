@@ -1,0 +1,15 @@
+.DS_Store
+.cursor/
+node_modules
+/build
+/.svelte-kit
+/package
+.env
+.env.*
+!.env.example
+vite.config.js.timestamp-*
+dist
+SKILLS.md
+SPEC.md
+AGENTS.md
+IMPLEMENTATION_STATUS.md

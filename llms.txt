@@ -1,0 +1,745 @@
+# svelte-chop-chop
+
+> A headless-first image cropping and editing SDK for Svelte 5. Zero dependencies beyond Svelte. Ships UI components, headless composables, a plugin system, and presets.
+
+## Quick Start
+
+```svelte
+<script lang="ts">
+  import { Cropper } from 'svelte-chop-chop';
+  import 'svelte-chop-chop/themes/default';
+</script>
+
+<Cropper src="/photo.jpg" aspectRatio={16 / 9} style="height: 400px;" />
+```
+
+```svelte
+<script lang="ts">
+  import { ImageEditor } from 'svelte-chop-chop';
+  import { pluginFilters } from 'svelte-chop-chop/plugins/filters';
+  import { pluginFinetune } from 'svelte-chop-chop/plugins/finetune';
+  import { pluginFrame } from 'svelte-chop-chop/plugins/frame';
+  import { pluginWatermark } from 'svelte-chop-chop/plugins/watermark';
+  import { pluginResize } from 'svelte-chop-chop/plugins/resize';
+  import 'svelte-chop-chop/themes/default';
+
+  function handleExport(result: ExportResult) {
+    const url = URL.createObjectURL(result.blob!);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'edited.jpg';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+</script>
+
+<ImageEditor
+  src="/photo.jpg"
+  plugins={[pluginFilters(), pluginFinetune(), pluginFrame(), pluginWatermark(), pluginResize()]}
+  onexport={handleExport}
+  style="height: 500px;"
+/>
+```
+
+## Package Exports
+
+| Path | Description |
+|------|-------------|
+| `svelte-chop-chop` | Components, composables, core utilities, types |
+| `svelte-chop-chop/headless` | `createCropper` composable for headless usage |
+| `svelte-chop-chop/plugins` | All plugin factories + `FILTER_PRESETS` |
+| `svelte-chop-chop/plugins/filters` | `pluginFilters` |
+| `svelte-chop-chop/plugins/finetune` | `pluginFinetune` |
+| `svelte-chop-chop/plugins/frame` | `pluginFrame` |
+| `svelte-chop-chop/plugins/watermark` | `pluginWatermark` |
+| `svelte-chop-chop/plugins/resize` | `pluginResize` |
+| `svelte-chop-chop/presets` | `profilePicture`, `coverPhoto`, `productImage` |
+| `svelte-chop-chop/themes/default` | Default CSS theme |
+| `svelte-chop-chop/themes/dark` | Dark CSS theme |
+| `svelte-chop-chop/themes/minimal` | Minimal CSS theme |
+
+---
+
+## Components
+
+### Cropper
+
+Lightweight cropping-only component.
+
+```svelte
+<Cropper
+  src="/photo.jpg"
+  aspectRatio={1}
+  sizeConstraints={{ minWidth: 200, maxWidth: 1000 }}
+  grid="rule-of-thirds"
+  transitions={true}
+  bind:coordinates
+  onchange={(c) => console.log(c)}
+  onready={() => console.log('loaded')}
+  onerror={(e) => console.error(e)}
+  style="height: 400px;"
+/>
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `src` | `ImageSource` | — | Image URL, data URL, `File`, `Blob`, or `HTMLImageElement` |
+| `aspectRatio` | `number \| { min?: number; max?: number } \| null` | `null` | Aspect ratio constraint. `null` = free |
+| `sizeConstraints` | `SizeConstraints` | — | Min/max width/height in pixels |
+| `cropOutsideImage` | `boolean` | `false` | Allow crop area outside image bounds |
+| `initialCrop` | `Partial<Rect>` | — | Initial crop position/size |
+| `grid` | `"none" \| "rule-of-thirds" \| "grid" \| "golden-ratio"` | `"rule-of-thirds"` | Grid overlay type |
+| `gridOnlyActive` | `boolean` | `true` | Show grid only during interaction |
+| `transitions` | `boolean` | `true` | Enable CSS transitions |
+| `stencil` | `Component` | `CropStencil` | Custom stencil component |
+| `stencilProps` | `Record<string, unknown>` | — | Props passed to stencil |
+| `readOnly` | `boolean` | `false` | Disable interaction |
+| `class` | `string` | `''` | CSS class on root element |
+| `style` | `string` | `''` | Inline CSS on root element |
+
+**Bindable values:**
+
+| Binding | Type | Description |
+|---------|------|-------------|
+| `coordinates` | `CropCoordinates` | Current crop in normalized, pixel, and viewport spaces |
+| `transforms` | `TransformState` | Current rotation, flip, zoom, pan |
+
+**Events:**
+
+| Event | Type | Description |
+|-------|------|-------------|
+| `onchange` | `(c: CropCoordinates) => void` | Fires on crop change |
+| `onready` | `() => void` | Fires when image is loaded |
+| `onerror` | `(e: Error) => void` | Fires on load error |
+
+**Snippets (slots):**
+
+| Snippet | Type | Description |
+|---------|------|-------------|
+| `overlay` | `Snippet<[StencilProps]>` | Custom overlay |
+| `toolbar` | `Snippet<[CropperReturn]>` | Custom toolbar |
+| `empty` | `Snippet` | Empty state |
+| `loading` | `Snippet` | Loading state |
+| `error` | `Snippet<[Error]>` | Error state |
+
+### ImageEditor
+
+Full-featured image editor with plugin-driven toolbar.
+
+```svelte
+<ImageEditor
+  src="/photo.jpg"
+  plugins={[pluginFilters(), pluginFinetune(), pluginFrame(), pluginWatermark(), pluginResize()]}
+  aspectRatio={null}
+  exportDefaults={{ format: 'image/webp', quality: 0.9 }}
+  onexport={(result) => { /* ExportResult */ }}
+  oncancel={() => { /* cancelled */ }}
+  style="height: 500px;"
+/>
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `src` | `ImageSource` | — | Image source |
+| `plugins` | `ChopPlugin[]` | `[]` | Plugin instances |
+| `aspectRatio` | `AspectRatio` | `null` | Initial crop aspect ratio |
+| `aspectRatioPresets` | `AspectRatioPreset[]` | — | Aspect ratio selector options |
+| `exportDefaults` | `ExportOptions` | — | Default export settings |
+| `class` | `string` | `''` | CSS class |
+| `style` | `string` | `''` | Inline CSS |
+
+**Events:**
+
+| Event | Type | Description |
+|-------|------|-------------|
+| `onexport` | `(result: ExportResult) => void` | Fires on export/save |
+| `oncancel` | `() => void` | Fires on cancel/close |
+
+### CircleStencil
+
+Drop-in circular stencil (forces 1:1 aspect ratio).
+
+```svelte
+<Cropper src="/photo.jpg" stencil={CircleStencil} />
+```
+
+### CropStencil
+
+Default rectangular stencil with 8 resize handles (4 if aspect ratio is fixed).
+
+---
+
+## Headless Composables
+
+### createImageEditor
+
+Full editor orchestrator — use this for complete custom UI.
+
+```typescript
+import { createImageEditor } from 'svelte-chop-chop';
+import { pluginFilters } from 'svelte-chop-chop/plugins/filters';
+
+const editor = createImageEditor({
+  plugins: [pluginFilters()],
+  maxHistory: 50,
+});
+
+await editor.loadImage('/photo.jpg');
+editor.applyFilter('clarendon');
+editor.setFinetune('brightness', 20);
+editor.rotate(90);
+editor.flipX();
+editor.undo();
+
+const result = await editor.export({
+  format: 'image/webp',
+  quality: 0.9,
+  maxWidth: 1920,
+});
+// result.blob, result.file, result.dataURL, result.canvas
+// result.coordinates, result.transforms, result.originalSize
+```
+
+**Options:**
+
+```typescript
+{
+  src?: ImageSource;
+  initialCrop?: Partial<Rect>;
+  initialTransforms?: Partial<TransformState>;
+  aspectRatio?: AspectRatio;
+  sizeConstraints?: SizeConstraints;
+  maxHistory?: number;              // Default: 50
+  exportDefaults?: Partial<ExportOptions>;
+  plugins?: ChopPlugin[];
+  readOnly?: boolean;               // Default: false
+}
+```
+
+**Returned API:**
+
+| Property / Method | Type | Description |
+|-------------------|------|-------------|
+| `image` | `LoadedImage \| null` | Loaded image |
+| `loading` | `boolean` | Loading state |
+| `error` | `Error \| null` | Load error |
+| `ready` | `boolean` | Image loaded and ready |
+| `crop` | `CropCoordinates` | Current crop coordinates |
+| `transforms` | `TransformState` | Current transforms |
+| `filters` | `FilterState` | Current filter state |
+| `dirty` | `boolean` | Has unsaved changes |
+| `canUndo` | `boolean` | Can undo |
+| `canRedo` | `boolean` | Can redo |
+| `actions` | `ToolbarAction[]` | Registered toolbar actions |
+| `activeTab` | `string \| null` | Active panel name |
+| `frameSettings` | `FrameSettings` | Frame settings |
+| `watermarkSettings` | `WatermarkSettings` | Watermark settings |
+| `filterPresets` | `FilterMatrix[]` | Available filter presets |
+| `loadImage(src)` | `Promise<void>` | Load image |
+| `setCrop(rect)` | `void` | Set crop |
+| `setAspectRatio(ratio)` | `void` | Set aspect ratio |
+| `fitToImage()` | `void` | Fit crop to image |
+| `rotate(degrees)` | `void` | Rotate by degrees |
+| `setRotation(degrees)` | `void` | Set exact rotation |
+| `flipX()` | `void` | Flip horizontal |
+| `flipY()` | `void` | Flip vertical |
+| `setZoom(zoom)` | `void` | Set zoom |
+| `zoomBy(delta)` | `void` | Zoom by delta |
+| `center()` | `void` | Center image |
+| `reset()` | `void` | Reset all |
+| `applyFilter(name)` | `void` | Apply filter preset |
+| `setFinetune(key, value)` | `void` | Set finetune value |
+| `resetFilters()` | `void` | Reset filters |
+| `undo()` | `void` | Undo |
+| `redo()` | `void` | Redo |
+| `export(options?)` | `Promise<ExportResult>` | Export image |
+| `download(filename?, options?)` | `Promise<void>` | Download as file |
+| `setFrame(settings)` | `void` | Update frame |
+| `setWatermark(settings)` | `void` | Update watermark |
+| `setActiveTab(tab)` | `void` | Set active panel |
+| `on(event, handler)` | `() => void` | Subscribe to event, returns unsubscribe |
+| `destroy()` | `void` | Clean up |
+
+### createCropper
+
+Lightweight headless cropper (no editor, no plugins).
+
+```typescript
+import { createCropper } from 'svelte-chop-chop/headless';
+
+const cropper = createCropper({
+  aspectRatio: 16 / 9,
+  sizeConstraints: { minWidth: 200 },
+});
+
+await cropper.loadImage('/photo.jpg');
+const result = await cropper.export({ format: 'image/jpeg', quality: 0.9 });
+```
+
+**Returned API:**
+
+| Property / Method | Type | Description |
+|-------------------|------|-------------|
+| `image` | `LoadedImage \| null` | Loaded image |
+| `loading` | `boolean` | Loading state |
+| `error` | `Error \| null` | Load error |
+| `ready` | `boolean` | Ready state |
+| `crop` | `CropCoordinates` | Crop coordinates |
+| `interacting` | `boolean` | User interacting |
+| `stencilRect` | `Rect` | Stencil rectangle |
+| `imageBounds` | `Rect` | Image bounds in viewport |
+| `stencilProps` | `StencilProps` | Props for stencil component |
+| `loadImage(src)` | `Promise<void>` | Load image |
+| `setCrop(rect)` | `void` | Set crop |
+| `setAspectRatio(ratio)` | `void` | Set aspect ratio |
+| `reset()` | `void` | Fit crop to image |
+| `export(options?)` | `Promise<ExportResult>` | Export |
+| `destroy()` | `void` | Clean up |
+
+---
+
+## Plugins
+
+Plugins add features to `ImageEditor` and `createImageEditor` via a setup function.
+
+### pluginFilters
+
+16 Instagram-style color filter presets.
+
+```typescript
+import { pluginFilters } from 'svelte-chop-chop/plugins/filters';
+
+const plugins = [pluginFilters()];
+// Optional: pass custom presets
+const plugins = [pluginFilters({ presets: myPresets })];
+```
+
+**Built-in presets:** none, clarendon, gingham, moon, lark, reyes, juno, slumber, crema, ludwig, aden, perpetua, vintage, chrome, fade, cool, warm.
+
+Keyboard shortcut: `Ctrl+F` toggles filter panel.
+
+### pluginFinetune
+
+Brightness, contrast, saturation, exposure, temperature, clarity, and gamma sliders.
+
+```typescript
+import { pluginFinetune } from 'svelte-chop-chop/plugins/finetune';
+
+const plugins = [pluginFinetune()];
+```
+
+**Controls:** brightness (-100 to 100), contrast (-100 to 100), saturation (-100 to 100), exposure (-100 to 100), temperature (-100 to 100), clarity (0 to 100), gamma (0.1 to 5).
+
+### pluginFrame
+
+Decorative frame overlay applied at export.
+
+```typescript
+import { pluginFrame } from 'svelte-chop-chop/plugins/frame';
+
+const plugins = [pluginFrame()];
+```
+
+**Frame types:** none, solid, line, hook. Configurable width (1-80 px) and color.
+
+### pluginWatermark
+
+Text watermark overlay applied at export.
+
+```typescript
+import { pluginWatermark } from 'svelte-chop-chop/plugins/watermark';
+
+const plugins = [pluginWatermark()];
+```
+
+**Options:** text, position (9-point grid: top-left, top-center, top-right, center, bottom-left, bottom-center, bottom-right), opacity (0-1), fontSize (8-96 px), color.
+
+### pluginResize
+
+Output width/height controls.
+
+```typescript
+import { pluginResize } from 'svelte-chop-chop/plugins/resize';
+
+const plugins = [pluginResize()];
+```
+
+### Custom Plugin
+
+```typescript
+const myPlugin: ChopPlugin = {
+  name: 'my-plugin',
+  setup(ctx) {
+    ctx.registerAction({
+      id: 'my-action',
+      label: 'My Action',
+      icon: 'star',
+      group: 'tabs',
+      execute: () => ctx.showPanel('my-panel'),
+    });
+
+    ctx.registerShortcut({
+      key: 'm',
+      ctrl: true,
+      action: () => { /* ... */ },
+      label: 'My shortcut',
+    });
+
+    ctx.registerPostProcessor(async (drawCtx, canvas) => {
+      // Draw on canvas at export time
+    });
+
+    ctx.registerFilterPresets([
+      { name: 'custom', label: 'Custom', matrix: [/* 20 numbers */] },
+    ]);
+
+    const unsub = ctx.on('export:complete', (result) => {
+      console.log('exported', result);
+    });
+
+    return () => unsub(); // cleanup
+  },
+};
+```
+
+---
+
+## Presets
+
+Pre-configured bundles for common use cases. Spread into component props or composable options.
+
+```typescript
+import { profilePicture, coverPhoto, productImage } from 'svelte-chop-chop/presets';
+```
+
+### profilePicture
+
+1:1 aspect, 512px max, JPEG.
+
+```svelte
+<Cropper src="/photo.jpg" {...profilePicture} />
+```
+
+### coverPhoto
+
+16:9 aspect, min 1200px wide, JPEG.
+
+```svelte
+<Cropper src="/photo.jpg" {...coverPhoto} />
+```
+
+### productImage
+
+1:1 aspect, PNG.
+
+```svelte
+<Cropper src="/photo.jpg" {...productImage} />
+```
+
+---
+
+## Types
+
+### Core Geometry
+
+```typescript
+interface Point { x: number; y: number }
+interface Size { width: number; height: number }
+interface Rect { x: number; y: number; width: number; height: number }
+```
+
+### CropCoordinates
+
+```typescript
+interface CropCoordinates {
+  normalized: Rect;  // 0–1 relative to original image
+  pixels: Rect;      // Original image pixels
+  viewport: Rect;    // Viewport coordinates
+}
+```
+
+### TransformState
+
+```typescript
+interface TransformState {
+  rotation: number;      // Degrees, 0–360
+  flipX: boolean;
+  flipY: boolean;
+  zoom: number;          // Multiplier, default 1
+  pan: Point;
+}
+```
+
+### ImageSource
+
+```typescript
+type ImageSource = string | File | Blob | HTMLImageElement | HTMLCanvasElement;
+```
+
+### AspectRatio
+
+```typescript
+type AspectRatio = number | { min?: number; max?: number } | null;
+```
+
+### SizeConstraints
+
+```typescript
+interface SizeConstraints {
+  minWidth?: number;
+  maxWidth?: number;
+  minHeight?: number;
+  maxHeight?: number;
+  minArea?: number;
+}
+```
+
+### ExportOptions
+
+```typescript
+interface ExportOptions {
+  format?: 'image/jpeg' | 'image/png' | 'image/webp';
+  quality?: number;        // 0–1, default 0.92
+  maxWidth?: number;
+  maxHeight?: number;
+  shape?: 'rect' | 'circle';  // Circle applies a circular mask with transparent corners
+  postProcess?: (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => void | Promise<void>;
+}
+```
+
+### ExportResult
+
+```typescript
+interface ExportResult {
+  canvas?: HTMLCanvasElement;
+  blob?: Blob;
+  file?: File;
+  dataURL?: string;
+  coordinates: CropCoordinates;
+  transforms: TransformState;
+  originalSize: { width: number; height: number };
+}
+```
+
+### FilterState
+
+```typescript
+interface FilterState {
+  preset: string | null;
+  brightness: number;
+  contrast: number;
+  saturation: number;
+  exposure: number;
+  temperature: number;
+  clarity: number;
+  gamma: number;
+}
+```
+
+### FilterMatrix
+
+```typescript
+interface FilterMatrix {
+  name: string;
+  label: string;
+  matrix: number[];  // 20-number 5x4 color matrix
+}
+```
+
+### FrameSettings
+
+```typescript
+interface FrameSettings {
+  type: 'none' | 'solid' | 'line' | 'hook';
+  color: string;
+  width: number;
+}
+```
+
+### WatermarkSettings
+
+```typescript
+interface WatermarkSettings {
+  text: string;
+  opacity: number;
+  position: 'top-left' | 'top-center' | 'top-right' | 'center'
+          | 'bottom-left' | 'bottom-center' | 'bottom-right';
+  color: string;
+  fontSize: number;
+}
+```
+
+### GridType
+
+```typescript
+type GridType = 'none' | 'rule-of-thirds' | 'grid' | 'golden-ratio';
+```
+
+### HandlePosition
+
+```typescript
+type HandlePosition = 'n' | 's' | 'e' | 'w' | 'nw' | 'ne' | 'sw' | 'se';
+```
+
+### StencilProps
+
+```typescript
+interface StencilProps {
+  rect: Rect;
+  aspectRatio: AspectRatio;
+  active: boolean;
+  imageBounds: Rect;
+  grid: GridType;
+  transitions: boolean;
+}
+```
+
+### ChopPlugin
+
+```typescript
+interface ChopPlugin {
+  name: string;
+  setup: (ctx: PluginContext) => void | (() => void);
+}
+
+interface PluginContext {
+  editor: ImageEditorReturn;
+  registerAction(action: ToolbarAction): void;
+  registerShortcut(shortcut: KeyboardShortcut): void;
+  showPanel(name: string | null): void;
+  registerPostProcessor(fn: ExportPostProcessor): void;
+  registerFilterPresets(presets: FilterMatrix[]): void;
+  on<T extends keyof EditorEvents>(event: T, handler: EditorEvents[T]): () => void;
+}
+```
+
+### ToolbarAction
+
+```typescript
+interface ToolbarAction {
+  id: string;
+  label: string;
+  icon?: string;
+  group?: string;
+  order?: number;
+  disabled?: () => boolean;
+  execute: () => void;
+}
+```
+
+### KeyboardShortcut
+
+```typescript
+interface KeyboardShortcut {
+  key: string;
+  ctrl?: boolean;
+  shift?: boolean;
+  alt?: boolean;
+  action: () => void;
+  label?: string;
+}
+```
+
+### EditorEvents
+
+```typescript
+interface EditorEvents {
+  'image:load': (image: LoadedImage) => void;
+  'image:error': (error: Error) => void;
+  'crop:change': (coordinates: CropCoordinates) => void;
+  'crop:start': () => void;
+  'crop:end': () => void;
+  'transform:change': (transforms: TransformState) => void;
+  'filter:change': (filters: FilterState) => void;
+  'history:change': (entry: HistoryEntry) => void;
+  'export:start': () => void;
+  'export:complete': (result: ExportResult) => void;
+  'export:error': (error: Error) => void;
+  'ready': () => void;
+  'destroy': () => void;
+}
+```
+
+---
+
+## Keyboard Shortcuts
+
+### ImageEditor
+
+| Key | Action |
+|-----|--------|
+| `R` | Rotate 90° clockwise |
+| `Shift+R` | Rotate 90° counter-clockwise |
+| `H` | Flip horizontal |
+| `V` | Flip vertical |
+| `Ctrl+Z` | Undo |
+| `Ctrl+Shift+Z` | Redo |
+| `+` / `=` | Zoom in |
+| `-` | Zoom out |
+| `0` | Reset crop to image bounds |
+| `Escape` | Reset all transforms |
+| `Ctrl+F` | Toggle filters panel |
+
+### Cropper
+
+| Key | Action |
+|-----|--------|
+| Arrow keys | Move crop 1px |
+| `Shift+Arrow` | Move crop 10px |
+| `0` | Reset crop to image bounds |
+
+---
+
+## Theming
+
+Import one CSS theme and override CSS custom properties as needed.
+
+```css
+@import 'svelte-chop-chop/themes/default';
+```
+
+**CSS Custom Properties:**
+
+| Variable | Description |
+|----------|-------------|
+| `--chop-bg` | Main background |
+| `--chop-canvas-bg` | Canvas background |
+| `--chop-color` | Text color |
+| `--chop-border-radius` | Border radius |
+| `--chop-stencil-border` | Stencil line color |
+| `--chop-stencil-border-active` | Stencil active color |
+| `--chop-grid-color` | Grid line color |
+| `--chop-overlay` | Dimmed area overlay |
+| `--chop-toolbar-bg` | Toolbar background |
+| `--chop-toolbar-color` | Toolbar text color |
+| `--chop-toolbar-active` | Active control color |
+| `--chop-transition-duration` | Animation duration |
+| `--chop-transition-easing` | Animation easing |
+
+---
+
+## Server Upload Example
+
+```svelte
+<script lang="ts">
+  import { ImageEditor } from 'svelte-chop-chop';
+  import { pluginFilters } from 'svelte-chop-chop/plugins/filters';
+  import 'svelte-chop-chop/themes/default';
+
+  async function handleExport(result: ExportResult) {
+    const formData = new FormData();
+    formData.append('image', result.blob!, 'photo.jpg');
+    await fetch('/api/upload', { method: 'POST', body: formData });
+  }
+</script>
+
+<ImageEditor
+  src="/photo.jpg"
+  plugins={[pluginFilters()]}
+  onexport={handleExport}
+/>
+```

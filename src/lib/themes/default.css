@@ -1,0 +1,23 @@
+/**
+ * svelte-chop-chop — Default theme
+ */
+
+.chop-editor,
+.chop-cropper {
+  --chop-bg: #1a1a1a;
+  --chop-overlay: rgba(0, 0, 0, 0.55);
+  --chop-stencil-border: rgba(255, 255, 255, 0.8);
+  --chop-stencil-border-active: #fff;
+  --chop-handle-color: #fff;
+  --chop-handle-size: 10px;
+  --chop-grid-color: rgba(255, 255, 255, 0.4);
+  --chop-toolbar-bg: #2a2a2a;
+  --chop-toolbar-color: #fff;
+  --chop-toolbar-active: #4a9eff;
+  --chop-transparency-even: #ccc;
+  --chop-transparency-odd: #fff;
+  --chop-transparency-size: 8px;
+  --chop-border-radius: 8px;
+  --chop-transition-duration: 300ms;
+  --chop-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+}
