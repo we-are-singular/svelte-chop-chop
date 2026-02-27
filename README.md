@@ -1,10 +1,10 @@
 # svelte-chop-chop
 
-> Headless-first image cropping and editing SDK for Svelte 5.  
+> Headless-first image cropping and editing SDK for Svelte 5.
 > Zero dependencies beyond Svelte.
 
 [![npm](https://img.shields.io/npm/v/@we-are-singular/svelte-chop-chop)](https://www.npmjs.com/package/@we-are-singular/svelte-chop-chop)
-[![license](https://img.shields.io/github/license/we-are-singular/svelte-chop-chop)](LICENSE)
+[![license](https://img.shields.io/github/license/we-are-singular/svelte-chop-chop?cache=0)](LICENSE)
 
 **[Documentation & Demo →](https://svelte-chop-chop.pages.dev)**
 
@@ -78,18 +78,18 @@ npm install @we-are-singular/svelte-chop-chop
 
 ## Cropper Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `src` | `ImageSource` | — | URL, data URL, `File`, `Blob`, or `HTMLImageElement` |
-| `aspectRatio` | `number \| { min?: number; max?: number } \| null` | `null` | Aspect ratio constraint |
-| `sizeConstraints` | `SizeConstraints` | — | Min/max width/height in pixels |
-| `grid` | `"none" \| "rule-of-thirds" \| "grid" \| "golden-ratio"` | `"rule-of-thirds"` | Grid overlay |
-| `transitions` | `boolean` | `true` | CSS transitions |
-| `stencil` | `Component` | `CropStencil` | Custom stencil component |
-| `readOnly` | `boolean` | `false` | Disable interaction |
-| `class` / `style` | `string` | `''` | Root element styling |
+| Prop              | Type                                                     | Default            | Description                                          |
+| ----------------- | -------------------------------------------------------- | ------------------ | ---------------------------------------------------- |
+| `src`             | `ImageSource`                                            | —                  | URL, data URL, `File`, `Blob`, or `HTMLImageElement` |
+| `aspectRatio`     | `number \| { min?: number; max?: number } \| null`       | `null`             | Aspect ratio constraint                              |
+| `sizeConstraints` | `SizeConstraints`                                        | —                  | Min/max width/height in pixels                       |
+| `grid`            | `"none" \| "rule-of-thirds" \| "grid" \| "golden-ratio"` | `"rule-of-thirds"` | Grid overlay                                         |
+| `transitions`     | `boolean`                                                | `true`             | CSS transitions                                      |
+| `stencil`         | `Component`                                              | `CropStencil`      | Custom stencil component                             |
+| `readOnly`        | `boolean`                                                | `false`            | Disable interaction                                  |
+| `class` / `style` | `string`                                                 | `''`               | Root element styling                                 |
 
-**Bindable:** `coordinates` (`CropCoordinates`), `transforms` (`TransformState`)  
+**Bindable:** `coordinates` (`CropCoordinates`), `transforms` (`TransformState`)
 **Events:** `onchange`, `onready`, `onerror`
 
 ---
@@ -97,20 +97,20 @@ npm install @we-are-singular/svelte-chop-chop
 ## Headless Usage
 
 ```typescript
-import { createCropper } from '@we-are-singular/svelte-chop-chop/headless';
-import { createImageEditor } from '@we-are-singular/svelte-chop-chop';
+import { createCropper } from "@we-are-singular/svelte-chop-chop/headless";
+import { createImageEditor } from "@we-are-singular/svelte-chop-chop";
 
 // Lightweight cropper
 const cropper = createCropper({ aspectRatio: 16 / 9 });
-await cropper.loadImage('/photo.jpg');
-const result = await cropper.export({ format: 'image/webp', quality: 0.9 });
+await cropper.loadImage("/photo.jpg");
+const result = await cropper.export({ format: "image/webp", quality: 0.9 });
 
 // Full editor
 const editor = createImageEditor({ plugins: [pluginFilters()] });
-await editor.loadImage('/photo.jpg');
-editor.applyFilter('clarendon');
+await editor.loadImage("/photo.jpg");
+editor.applyFilter("clarendon");
 editor.rotate(90);
-const result = await editor.export({ format: 'image/webp', quality: 0.9 });
+const result = await editor.export({ format: "image/webp", quality: 0.9 });
 // result.blob, result.dataURL, result.canvas, result.coordinates
 ```
 
@@ -118,34 +118,36 @@ const result = await editor.export({ format: 'image/webp', quality: 0.9 });
 
 ## Plugins
 
-| Import | Description |
-|--------|-------------|
-| `@we-are-singular/svelte-chop-chop/plugins/filters` | 16 Instagram-style color filter presets |
-| `@we-are-singular/svelte-chop-chop/plugins/finetune` | Brightness, contrast, saturation, exposure, etc. |
-| `@we-are-singular/svelte-chop-chop/plugins/frame` | Decorative frame at export (solid, line, hook) |
-| `@we-are-singular/svelte-chop-chop/plugins/watermark` | Text watermark at export |
-| `@we-are-singular/svelte-chop-chop/plugins/resize` | Output width/height controls |
+| Import                                                | Description                                      |
+| ----------------------------------------------------- | ------------------------------------------------ |
+| `@we-are-singular/svelte-chop-chop/plugins/filters`   | 16 Instagram-style color filter presets          |
+| `@we-are-singular/svelte-chop-chop/plugins/finetune`  | Brightness, contrast, saturation, exposure, etc. |
+| `@we-are-singular/svelte-chop-chop/plugins/frame`     | Decorative frame at export (solid, line, hook)   |
+| `@we-are-singular/svelte-chop-chop/plugins/watermark` | Text watermark at export                         |
+| `@we-are-singular/svelte-chop-chop/plugins/resize`    | Output width/height controls                     |
 
 ### Custom Plugin
 
 ```typescript
-import type { ChopPlugin } from '@we-are-singular/svelte-chop-chop';
+import type { ChopPlugin } from "@we-are-singular/svelte-chop-chop";
 
 const myPlugin: ChopPlugin = {
-  name: 'my-plugin',
+  name: "my-plugin",
   setup(ctx) {
     ctx.registerAction({
-      id: 'my-action',
-      label: 'My Action',
-      group: 'tabs',
-      execute: () => ctx.showPanel('my-panel'),
+      id: "my-action",
+      label: "My Action",
+      group: "tabs",
+      execute: () => ctx.showPanel("my-panel"),
     });
 
     ctx.registerPostProcessor(async (drawCtx, canvas) => {
       // draw on canvas at export time
     });
 
-    return () => { /* cleanup */ };
+    return () => {
+      /* cleanup */
+    };
   },
 };
 ```
@@ -161,18 +163,18 @@ import { profilePicture, coverPhoto, productImage } from '@we-are-singular/svelt
 <Cropper src="/photo.jpg" {...profilePicture} />
 ```
 
-| Preset | Aspect | Max Size | Format |
-|--------|--------|----------|--------|
-| `profilePicture` | 1:1 | 512px | JPEG |
-| `coverPhoto` | 16:9 | min 1200px wide | JPEG |
-| `productImage` | 1:1 | — | PNG |
+| Preset           | Aspect | Max Size        | Format |
+| ---------------- | ------ | --------------- | ------ |
+| `profilePicture` | 1:1    | 512px           | JPEG   |
+| `coverPhoto`     | 16:9   | min 1200px wide | JPEG   |
+| `productImage`   | 1:1    | —               | PNG    |
 
 ---
 
 ## Theming
 
 ```css
-@import '@we-are-singular/svelte-chop-chop/themes/default'; /* or dark, minimal */
+@import "@we-are-singular/svelte-chop-chop/themes/default"; /* or dark, minimal */
 ```
 
 Override any CSS custom property:
@@ -191,30 +193,30 @@ Override any CSS custom property:
 
 ## Package Exports
 
-| Path | Description |
-|------|-------------|
-| `@we-are-singular/svelte-chop-chop` | Components, composables, types |
-| `@we-are-singular/svelte-chop-chop/headless` | `createCropper` composable |
-| `@we-are-singular/svelte-chop-chop/plugins` | All plugin factories |
-| `@we-are-singular/svelte-chop-chop/presets` | Preset bundles |
-| `@we-are-singular/svelte-chop-chop/themes/default` | Default CSS theme |
-| `@we-are-singular/svelte-chop-chop/themes/dark` | Dark CSS theme |
-| `@we-are-singular/svelte-chop-chop/themes/minimal` | Minimal CSS theme |
+| Path                                               | Description                    |
+| -------------------------------------------------- | ------------------------------ |
+| `@we-are-singular/svelte-chop-chop`                | Components, composables, types |
+| `@we-are-singular/svelte-chop-chop/headless`       | `createCropper` composable     |
+| `@we-are-singular/svelte-chop-chop/plugins`        | All plugin factories           |
+| `@we-are-singular/svelte-chop-chop/presets`        | Preset bundles                 |
+| `@we-are-singular/svelte-chop-chop/themes/default` | Default CSS theme              |
+| `@we-are-singular/svelte-chop-chop/themes/dark`    | Dark CSS theme                 |
+| `@we-are-singular/svelte-chop-chop/themes/minimal` | Minimal CSS theme              |
 
 ---
 
 ## Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
-| `R` / `Shift+R` | Rotate 90° CW / CCW |
-| `H` / `V` | Flip horizontal / vertical |
-| `Ctrl+Z` / `Ctrl+Shift+Z` | Undo / Redo |
-| `+` / `-` | Zoom in / out |
-| `0` | Reset crop to image bounds |
-| `Escape` | Reset all transforms |
-| `Ctrl+F` | Toggle filters panel |
-| Arrow keys | Move crop 1px (10px with Shift) |
+| Key                       | Action                          |
+| ------------------------- | ------------------------------- |
+| `R` / `Shift+R`           | Rotate 90° CW / CCW             |
+| `H` / `V`                 | Flip horizontal / vertical      |
+| `Ctrl+Z` / `Ctrl+Shift+Z` | Undo / Redo                     |
+| `+` / `-`                 | Zoom in / out                   |
+| `0`                       | Reset crop to image bounds      |
+| `Escape`                  | Reset all transforms            |
+| `Ctrl+F`                  | Toggle filters panel            |
+| Arrow keys                | Move crop 1px (10px with Shift) |
 
 ---
 
