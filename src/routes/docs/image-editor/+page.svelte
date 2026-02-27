@@ -1,7 +1,27 @@
+<script lang="ts">
+  import { ImageEditor } from "$lib";
+  import { pluginFilters } from "$lib/plugins/plugin-filters.js";
+  import { pluginFinetune } from "$lib/plugins/plugin-finetune.js";
+  import { pluginFrame } from "$lib/plugins/plugin-frame.js";
+  import { pluginWatermark } from "$lib/plugins/plugin-watermark.js";
+  import { pluginResize } from "$lib/plugins/plugin-resize.js";
+  import "$lib/themes/default.css";
+  import DocLiveExample from "../DocLiveExample.svelte";
+</script>
+
+<svelte:head>
+  <title>ImageEditor — svelte-chop-chop</title>
+  <meta
+    name="description"
+    content="ImageEditor component reference. Full-featured image editor with crop, rotate, filters, and plugin system."
+  />
+</svelte:head>
+
 <h1>ImageEditor</h1>
 <p class="lead">
-  The all-in-one <code>ImageEditor</code> component provides a full-featured editing toolbar
-  driven by a plugin system. Crop, filter, tune, resize, frame and watermark — all in one component.
+  The all-in-one <code>ImageEditor</code>
+   component provides a full-featured editing toolbar driven by a plugin system.
+  Crop, filter, tune, resize, frame and watermark — all in one component.
 </p>
 
 <h2>Import</h2>
@@ -12,14 +32,26 @@
 
 <table>
   <thead>
-    <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    <tr>
+      <th>Prop</th>
+      <th>Type</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
   </thead>
   <tbody>
     <tr>
       <td><code>src</code></td>
       <td><code>ImageSource</code></td>
       <td>—</td>
-      <td>Image URL, data URL, <code>File</code>, <code>Blob</code>, or <code>HTMLImageElement</code>.</td>
+      <td>
+        Image URL, data URL, <code>File</code>
+        ,
+        <code>Blob</code>
+        , or
+        <code>HTMLImageElement</code>
+        .
+      </td>
     </tr>
     <tr>
       <td><code>plugins</code></td>
@@ -29,7 +61,9 @@
     </tr>
     <tr>
       <td><code>aspectRatio</code></td>
-      <td><code>number | &#123; min?: number; max?: number &#125; | null</code></td>
+      <td>
+        <code>number | &#123; min?: number; max?: number &#125; | null</code>
+      </td>
       <td><code>null</code></td>
       <td>Initial crop aspect ratio.</td>
     </tr>
@@ -46,13 +80,21 @@
 
 <table>
   <thead>
-    <tr><th>Event</th><th>Type</th><th>Description</th></tr>
+    <tr>
+      <th>Event</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
   </thead>
   <tbody>
     <tr>
       <td><code>onexport</code></td>
       <td><code>(blob: Blob) =&gt; void</code></td>
-      <td>Fires when the user presses the export/save button. Receives the exported <code>Blob</code>.</td>
+      <td>
+        Fires when the user presses the export/save button. Receives the
+        exported <code>Blob</code>
+        .
+      </td>
     </tr>
     <tr>
       <td><code>oncancel</code></td>
@@ -62,32 +104,66 @@
   </tbody>
 </table>
 
+<h2>Minimal editor (crop + rotate only)</h2>
+
+<p>
+  Use <code>ImageEditor</code>
+   without plugins for just crop and rotate:
+</p>
+
+<DocLiveExample
+  title="Crop and rotate only (no plugins)"
+  code={`<ImageEditor src="/photo.jpg" style="height: 320px;" />`}
+>
+  {#snippet demo()}
+    <ImageEditor
+      src="https://picsum.photos/id/10/800/600"
+      style="height: 280px; width: 100%;"
+    />
+  {/snippet}
+</DocLiveExample>
+
 <h2>Full example with all plugins</h2>
 
-<pre><code>&lt;script lang="ts"&gt;
-  import &#123; ImageEditor &#125; from '@we-are-singular/svelte-chop-chop';
-  import &#123; pluginFilters &#125; from '@we-are-singular/svelte-chop-chop/plugins/filters';
-  import &#123; pluginFinetune &#125; from '@we-are-singular/svelte-chop-chop/plugins/finetune';
-  import &#123; pluginFrame &#125; from '@we-are-singular/svelte-chop-chop/plugins/frame';
-  import &#123; pluginWatermark &#125; from '@we-are-singular/svelte-chop-chop/plugins/watermark';
-  import &#123; pluginResize &#125; from '@we-are-singular/svelte-chop-chop/plugins/resize';
+<DocLiveExample
+  title="ImageEditor with all plugins"
+  code={`<script lang="ts">
+  import { ImageEditor } from '@we-are-singular/svelte-chop-chop';
+  import { pluginFilters, pluginFinetune, pluginFrame, pluginWatermark, pluginResize } from '@we-are-singular/svelte-chop-chop';
   import '@we-are-singular/svelte-chop-chop/themes/default';
 
-  function handleExport(blob: Blob) &#123;
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'edited.jpg';
-    link.click();
-    URL.revokeObjectURL(url);
-  &#125;
-&lt;/script&gt;
+  function handleExport(result) {
+    if (result.blob) {
+      const url = URL.createObjectURL(result.blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'edited.jpg';
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+  }
+</script>
 
-&lt;ImageEditor
+<ImageEditor
   src="/photo.jpg"
-  plugins=&#123;[pluginFilters(), pluginFinetune(), pluginFrame(), pluginWatermark(), pluginResize()]&#125;
-  onexport=&#123;handleExport&#125;
-/&gt;</code></pre>
+  plugins={[pluginFilters(), pluginFinetune(), pluginFrame(), pluginWatermark(), pluginResize()]}
+  onexport={handleExport}
+/>`}
+>
+  {#snippet demo()}
+    <ImageEditor
+      src="https://picsum.photos/id/10/800/600"
+      plugins={[
+        pluginFilters(),
+        pluginFinetune(),
+        pluginFrame(),
+        pluginWatermark(),
+        pluginResize(),
+      ]}
+      style="height: 320px; width: 100%;"
+    />
+  {/snippet}
+</DocLiveExample>
 
 <h2>Upload to server example</h2>
 
@@ -114,27 +190,64 @@
 
 <table>
   <thead>
-    <tr><th>Key</th><th>Action</th></tr>
+    <tr>
+      <th>Key</th>
+      <th>Action</th>
+    </tr>
   </thead>
   <tbody>
-    <tr><td><code>R</code></td><td>Rotate 90° clockwise</td></tr>
-    <tr><td><code>Shift+R</code></td><td>Rotate 90° counter-clockwise</td></tr>
-    <tr><td><code>H</code></td><td>Flip horizontal</td></tr>
-    <tr><td><code>V</code></td><td>Flip vertical</td></tr>
-    <tr><td><code>Ctrl+Z</code></td><td>Undo</td></tr>
-    <tr><td><code>Ctrl+Shift+Z</code></td><td>Redo</td></tr>
-    <tr><td><code>Arrow keys</code></td><td>Move crop 1px (10px with Shift)</td></tr>
-    <tr><td><code>+</code> / <code>-</code></td><td>Zoom in / out</td></tr>
-    <tr><td><code>0</code></td><td>Reset zoom (fit to view)</td></tr>
-    <tr><td><code>Escape</code></td><td>Cancel / close</td></tr>
+    <tr>
+      <td><code>R</code></td>
+      <td>Rotate 90° clockwise</td>
+    </tr>
+    <tr>
+      <td><code>Shift+R</code></td>
+      <td>Rotate 90° counter-clockwise</td>
+    </tr>
+    <tr>
+      <td><code>H</code></td>
+      <td>Flip horizontal</td>
+    </tr>
+    <tr>
+      <td><code>V</code></td>
+      <td>Flip vertical</td>
+    </tr>
+    <tr>
+      <td><code>Ctrl+Z</code></td>
+      <td>Undo</td>
+    </tr>
+    <tr>
+      <td><code>Ctrl+Shift+Z</code></td>
+      <td>Redo</td>
+    </tr>
+    <tr>
+      <td><code>Arrow keys</code></td>
+      <td>Move crop 1px (10px with Shift)</td>
+    </tr>
+    <tr>
+      <td>
+        <code>+</code>
+        /
+        <code>-</code>
+      </td>
+      <td>Zoom in / out</td>
+    </tr>
+    <tr>
+      <td><code>0</code></td>
+      <td>Reset zoom (fit to view)</td>
+    </tr>
+    <tr>
+      <td><code>Escape</code></td>
+      <td>Cancel / close</td>
+    </tr>
   </tbody>
 </table>
 
 <h2>Headless composable</h2>
 
 <p>
-  For full UI control, use <code>createImageEditor</code> from the headless export.
-  It returns a reactive state object with all actions:
+  For full UI control, use <code>createImageEditor</code>
+   from the headless export. It returns a reactive state object with all actions:
 </p>
 
 <pre><code>import &#123; createImageEditor &#125; from '@we-are-singular/svelte-chop-chop/headless';
@@ -176,7 +289,12 @@ const result = await editor.export(&#123;
 
 <table>
   <thead>
-    <tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    <tr>
+      <th>Option</th>
+      <th>Type</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
   </thead>
   <tbody>
     <tr>
@@ -207,13 +325,20 @@ const result = await editor.export(&#123;
       <td><code>shape</code></td>
       <td><code>'rect' | 'circle'</code></td>
       <td><code>'rect'</code></td>
-      <td>Crop shape. <code>'circle'</code> applies a circular mask with transparent corners. Automatically uses PNG if JPEG was selected (JPEG doesn't support transparency).</td>
+      <td>
+        Crop shape. <code>'circle'</code>
+         applies a circular mask with transparent corners. Automatically uses PNG
+        if JPEG was selected (JPEG doesn't support transparency).
+      </td>
     </tr>
     <tr>
       <td><code>postProcess</code></td>
       <td><code>(ctx, canvas) =&gt; void | Promise</code></td>
       <td>—</td>
-      <td>Hook to draw on the canvas after rendering but before encoding (e.g. custom watermark).</td>
+      <td>
+        Hook to draw on the canvas after rendering but before encoding (e.g.
+        custom watermark).
+      </td>
     </tr>
   </tbody>
 </table>

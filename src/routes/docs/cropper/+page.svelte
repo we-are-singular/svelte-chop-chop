@@ -1,12 +1,71 @@
+<script lang="ts">
+  import { Cropper, CircleStencil } from "$lib";
+  import "$lib/themes/default.css";
+  import DocLiveExample from "../DocLiveExample.svelte";
+</script>
+
+{#snippet cropToolbar(cropper)}
+  <div style="position: absolute; bottom: 12px; right: 12px; z-index: 10;">
+    <button
+      onclick={async () => {
+        const result = await cropper.export({
+          format: "image/webp",
+          quality: 0.9,
+        });
+        if (result.blob) {
+          const url = URL.createObjectURL(result.blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "cropped.webp";
+          a.click();
+          URL.revokeObjectURL(url);
+        }
+      }}
+      style="padding: 0.5rem 1rem; background: #4a9eff; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;"
+    >
+      Crop
+    </button>
+  </div>
+{/snippet}
+
+<svelte:head>
+  <title>Cropper — svelte-chop-chop</title>
+  <meta
+    name="description"
+    content="Cropper component reference. Interactive image cropping with draggable stencil, zoom, pan, keyboard navigation, and touch support."
+  />
+</svelte:head>
+
 <h1>Cropper</h1>
 <p class="lead">
-  The <code>Cropper</code> component provides interactive image cropping with a draggable stencil,
-  zoom, pan, keyboard navigation, and touch/pinch support.
+  The <code>Cropper</code>
+   component provides interactive image cropping with a draggable stencil, zoom,
+  pan, keyboard navigation, and touch/pinch support.
 </p>
 
 <h2>Import</h2>
 
 <pre><code>import &#123; Cropper &#125; from '@we-are-singular/svelte-chop-chop';</code></pre>
+
+<DocLiveExample
+  title="Basic rectangular cropper"
+  code={`<Cropper
+  src="/photo.jpg"
+  aspectRatio={16/9}
+  grid="rule-of-thirds"
+  toolbar={cropToolbar}
+/>`}
+>
+  {#snippet demo()}
+    <Cropper
+      src="https://picsum.photos/id/10/800/600"
+      aspectRatio={16 / 9}
+      grid="rule-of-thirds"
+      style="height: 280px; width: 100%;"
+      toolbar={cropToolbar}
+    />
+  {/snippet}
+</DocLiveExample>
 
 <h2>Props</h2>
 
@@ -14,14 +73,26 @@
 
 <table>
   <thead>
-    <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    <tr>
+      <th>Prop</th>
+      <th>Type</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
   </thead>
   <tbody>
     <tr>
       <td><code>src</code></td>
       <td><code>ImageSource</code></td>
       <td>—</td>
-      <td>Image URL, data URL, <code>File</code>, <code>Blob</code>, or <code>HTMLImageElement</code>.</td>
+      <td>
+        Image URL, data URL, <code>File</code>
+        ,
+        <code>Blob</code>
+        , or
+        <code>HTMLImageElement</code>
+        .
+      </td>
     </tr>
   </tbody>
 </table>
@@ -30,20 +101,41 @@
 
 <table>
   <thead>
-    <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    <tr>
+      <th>Prop</th>
+      <th>Type</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
   </thead>
   <tbody>
     <tr>
       <td><code>aspectRatio</code></td>
-      <td><code>number | &#123; min?: number; max?: number &#125; | null</code></td>
+      <td>
+        <code>number | &#123; min?: number; max?: number &#125; | null</code>
+      </td>
       <td><code>null</code></td>
-      <td>Lock width/height ratio. <code>null</code> allows free crop.</td>
+      <td>
+        Lock width/height ratio. <code>null</code>
+         allows free crop.
+      </td>
     </tr>
     <tr>
       <td><code>sizeConstraints</code></td>
       <td><code>SizeConstraints</code></td>
       <td>—</td>
-      <td>Object with <code>minWidth</code>, <code>maxWidth</code>, <code>minHeight</code>, <code>maxHeight</code>, <code>minArea</code>.</td>
+      <td>
+        Object with <code>minWidth</code>
+        ,
+        <code>maxWidth</code>
+        ,
+        <code>minHeight</code>
+        ,
+        <code>maxHeight</code>
+        ,
+        <code>minArea</code>
+        .
+      </td>
     </tr>
     <tr>
       <td><code>cropOutsideImage</code></td>
@@ -64,7 +156,12 @@
 
 <table>
   <thead>
-    <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    <tr>
+      <th>Prop</th>
+      <th>Type</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
   </thead>
   <tbody>
     <tr>
@@ -92,14 +189,22 @@
 
 <table>
   <thead>
-    <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    <tr>
+      <th>Prop</th>
+      <th>Type</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
   </thead>
   <tbody>
     <tr>
       <td><code>stencil</code></td>
       <td><code>Component</code></td>
       <td><code>CropStencil</code></td>
-      <td>Stencil component. Pass <code>CircleStencil</code> for circular crop.</td>
+      <td>
+        Stencil component. Pass <code>CircleStencil</code>
+         for circular crop.
+      </td>
     </tr>
     <tr>
       <td><code>stencilProps</code></td>
@@ -114,7 +219,12 @@
 
 <table>
   <thead>
-    <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    <tr>
+      <th>Prop</th>
+      <th>Type</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
   </thead>
   <tbody>
     <tr>
@@ -130,7 +240,12 @@
 
 <table>
   <thead>
-    <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    <tr>
+      <th>Prop</th>
+      <th>Type</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
   </thead>
   <tbody>
     <tr>
@@ -152,13 +267,20 @@
 
 <table>
   <thead>
-    <tr><th>Binding</th><th>Type</th><th>Description</th></tr>
+    <tr>
+      <th>Binding</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
   </thead>
   <tbody>
     <tr>
       <td><code>bind:coordinates</code></td>
       <td><code>CropCoordinates</code></td>
-      <td>Two-way binding for the current crop coordinates (normalised, pixels, viewport).</td>
+      <td>
+        Two-way binding for the current crop coordinates (normalised, pixels,
+        viewport).
+      </td>
     </tr>
     <tr>
       <td><code>bind:transforms</code></td>
@@ -172,7 +294,11 @@
 
 <table>
   <thead>
-    <tr><th>Event</th><th>Type</th><th>Description</th></tr>
+    <tr>
+      <th>Event</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
   </thead>
   <tbody>
     <tr>
@@ -199,22 +325,46 @@
 
 <table>
   <thead>
-    <tr><th>Snippet</th><th>Props</th><th>Description</th></tr>
+    <tr>
+      <th>Snippet</th>
+      <th>Props</th>
+      <th>Description</th>
+    </tr>
   </thead>
   <tbody>
-    <tr><td><code>overlay</code></td><td><code>StencilProps</code></td><td>Custom overlay drawn on top of the stencil area.</td></tr>
-    <tr><td><code>toolbar</code></td><td><code>CropperReturn</code></td><td>Custom toolbar with full access to the cropper instance.</td></tr>
-    <tr><td><code>empty</code></td><td>—</td><td>Shown when no image source is provided.</td></tr>
-    <tr><td><code>loading</code></td><td>—</td><td>Shown while the image is loading.</td></tr>
-    <tr><td><code>error</code></td><td><code>Error</code></td><td>Shown when image loading fails.</td></tr>
+    <tr>
+      <td><code>overlay</code></td>
+      <td><code>StencilProps</code></td>
+      <td>Custom overlay drawn on top of the stencil area.</td>
+    </tr>
+    <tr>
+      <td><code>toolbar</code></td>
+      <td><code>CropperReturn</code></td>
+      <td>Custom toolbar with full access to the cropper instance.</td>
+    </tr>
+    <tr>
+      <td><code>empty</code></td>
+      <td>—</td>
+      <td>Shown when no image source is provided.</td>
+    </tr>
+    <tr>
+      <td><code>loading</code></td>
+      <td>—</td>
+      <td>Shown while the image is loading.</td>
+    </tr>
+    <tr>
+      <td><code>error</code></td>
+      <td><code>Error</code></td>
+      <td>Shown when image loading fails.</td>
+    </tr>
   </tbody>
 </table>
 
 <h2>CropCoordinates type</h2>
 
 <p>
-  Every coordinate callback and binding provides a <code>CropCoordinates</code> object with three
-  representations of the same crop region:
+  Every coordinate callback and binding provides a <code>CropCoordinates</code>
+   object with three representations of the same crop region:
 </p>
 
 <pre><code>interface CropCoordinates &#123;
@@ -228,19 +378,50 @@
 
 <h2>Stencil types</h2>
 
-<p>Use the built-in <code>CropStencil</code> (rectangular) or <code>CircleStencil</code> (circular mask):</p>
+<p>
+  Use the built-in <code>CropStencil</code>
+  (rectangular) or
+  <code>CircleStencil</code>
+   (circular mask):
+</p>
 
-<pre><code>&lt;script lang="ts"&gt;
-  import &#123; Cropper, CircleStencil &#125; from '@we-are-singular/svelte-chop-chop';
-&lt;/script&gt;
+<DocLiveExample
+  title="Circle stencil (1:1)"
+  code={`<script lang="ts">
+  import { Cropper, CircleStencil } from '@we-are-singular/svelte-chop-chop';
+  import '@we-are-singular/svelte-chop-chop/themes/default';
+</script>
 
-&lt;Cropper src="/avatar.jpg" aspectRatio=&#123;1&#125; stencil=&#123;CircleStencil&#125; /&gt;</code></pre>
+<Cropper src="/avatar.jpg" aspectRatio={1} stencil={CircleStencil} />`}
+>
+  {#snippet demo()}
+    <Cropper
+      src="https://picsum.photos/id/64/400/400"
+      aspectRatio={1}
+      stencil={CircleStencil}
+      style="height: 280px; width: 100%;"
+      toolbar={cropToolbar}
+    />
+  {/snippet}
+</DocLiveExample>
 
-<p>Note: <code>CircleStencil</code> automatically forces a <code>1:1</code> aspect ratio regardless of the <code>aspectRatio</code> prop.</p>
+<p>
+  Note: <code>CircleStencil</code>
+  automatically forces a
+  <code>1:1</code>
+  aspect ratio regardless of the
+  <code>aspectRatio</code>
+   prop.
+</p>
 
 <h2>Export</h2>
 
-<p>Bind <code>this</code> to get a reference to the cropper instance and call <code>export()</code>:</p>
+<p>
+  Bind <code>this</code>
+  to get a reference to the cropper instance and call
+  <code>export()</code>
+  :
+</p>
 
 <pre><code>&lt;script lang="ts"&gt;
   import &#123; Cropper &#125; from '@we-are-singular/svelte-chop-chop';
@@ -297,7 +478,14 @@
 
 &lt;Cropper src="/photo.jpg" &#123;...profilePicture&#125; /&gt;</code></pre>
 
-<p>Available presets: <code>profilePicture</code> (1:1, 512px), <code>coverPhoto</code> (16:9, min 1200px), <code>productImage</code> (1:1, PNG).</p>
+<p>
+  Available presets: <code>profilePicture</code>
+  (1:1, 512px),
+  <code>coverPhoto</code>
+  (16:9, min 1200px),
+  <code>productImage</code>
+   (1:1, PNG).
+</p>
 
 <h2>Keyboard shortcuts</h2>
 
@@ -305,19 +493,38 @@
 
 <table>
   <thead>
-    <tr><th>Key</th><th>Action</th></tr>
+    <tr>
+      <th>Key</th>
+      <th>Action</th>
+    </tr>
   </thead>
   <tbody>
-    <tr><td><code>Arrow keys</code></td><td>Move stencil 1px (10px with Shift)</td></tr>
-    <tr><td><code>+</code> / <code>-</code></td><td>Zoom in / out</td></tr>
-    <tr><td><code>0</code></td><td>Reset zoom (fit to view)</td></tr>
-    <tr><td><code>Escape</code></td><td>Reset crop to fit image</td></tr>
+    <tr>
+      <td><code>Arrow keys</code></td>
+      <td>Move stencil 1px (10px with Shift)</td>
+    </tr>
+    <tr>
+      <td>
+        <code>+</code>
+        /
+        <code>-</code>
+      </td>
+      <td>Zoom in / out</td>
+    </tr>
+    <tr>
+      <td><code>0</code></td>
+      <td>Reset zoom (fit to view)</td>
+    </tr>
+    <tr>
+      <td><code>Escape</code></td>
+      <td>Reset crop to fit image</td>
+    </tr>
   </tbody>
 </table>
 
 <h2>Custom stencil</h2>
 
 <p>
-  See the <a href="/docs/custom-stencil">Custom Stencil</a> guide for details on
-  writing your own stencil component.
+  See the <a href="/docs/custom-stencil">Custom Stencil</a>
+   guide for details on writing your own stencil component.
 </p>

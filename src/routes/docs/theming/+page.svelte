@@ -1,12 +1,66 @@
+<script lang="ts">
+  import { Cropper } from "$lib";
+  import "$lib/themes/default.css";
+  import DocLiveExample from "../DocLiveExample.svelte";
+</script>
+
+{#snippet cropToolbar(cropper)}
+  <div style="position: absolute; bottom: 12px; right: 12px; z-index: 10;">
+    <button
+      onclick={async () => {
+        const result = await cropper.export({
+          format: "image/webp",
+          quality: 0.9,
+        });
+        if (result.blob) {
+          const url = URL.createObjectURL(result.blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "cropped.webp";
+          a.click();
+          URL.revokeObjectURL(url);
+        }
+      }}
+      style="padding: 0.5rem 1rem; background: #4a9eff; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;"
+    >
+      Crop
+    </button>
+  </div>
+{/snippet}
+
+<svelte:head>
+  <title>Theming — svelte-chop-chop</title>
+  <meta
+    name="description"
+    content="Customize svelte-chop-chop with CSS variables. Built-in themes: default, dark, minimal."
+  />
+</svelte:head>
+
 <h1>Theming</h1>
 <p class="lead">
-  svelte-chop-chop uses CSS custom properties for theming. Import a built-in theme
-  or override individual variables to match your brand.
+  svelte-chop-chop uses CSS custom properties for theming. Import a built-in
+  theme or override individual variables to match your brand.
 </p>
 
 <h2>Built-in themes</h2>
 
 <p>Import exactly one theme in your app entry point or layout:</p>
+
+<DocLiveExample
+  title="Default theme"
+  code={`import '@we-are-singular/svelte-chop-chop/themes/default';
+
+<Cropper src="/photo.jpg" />`}
+>
+  {#snippet demo()}
+    <Cropper
+      src="https://picsum.photos/id/10/800/600"
+      aspectRatio={16 / 9}
+      style="height: 280px; width: 100%;"
+      toolbar={cropToolbar}
+    />
+  {/snippet}
+</DocLiveExample>
 
 <pre><code>// Default (dark blue-grey)
 import '@we-are-singular/svelte-chop-chop/themes/default';
@@ -23,14 +77,38 @@ import '@we-are-singular/svelte-chop-chop/themes/minimal';</code></pre>
 
 <table>
   <thead>
-    <tr><th>Variable</th><th>Default</th><th>Description</th></tr>
+    <tr>
+      <th>Variable</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
   </thead>
   <tbody>
-    <tr><td><code>--chop-bg</code></td><td><code>#1a1a2e</code></td><td>Editor background.</td></tr>
-    <tr><td><code>--chop-surface</code></td><td><code>#16213e</code></td><td>Toolbar and panel surface.</td></tr>
-    <tr><td><code>--chop-border</code></td><td><code>rgba(255,255,255,0.08)</code></td><td>Divider and border color.</td></tr>
-    <tr><td><code>--chop-radius</code></td><td><code>8px</code></td><td>General border radius.</td></tr>
-    <tr><td><code>--chop-font</code></td><td><code>system-ui, sans-serif</code></td><td>Font family.</td></tr>
+    <tr>
+      <td><code>--chop-bg</code></td>
+      <td><code>#1a1a2e</code></td>
+      <td>Editor background.</td>
+    </tr>
+    <tr>
+      <td><code>--chop-surface</code></td>
+      <td><code>#16213e</code></td>
+      <td>Toolbar and panel surface.</td>
+    </tr>
+    <tr>
+      <td><code>--chop-border</code></td>
+      <td><code>rgba(255,255,255,0.08)</code></td>
+      <td>Divider and border color.</td>
+    </tr>
+    <tr>
+      <td><code>--chop-radius</code></td>
+      <td><code>8px</code></td>
+      <td>General border radius.</td>
+    </tr>
+    <tr>
+      <td><code>--chop-font</code></td>
+      <td><code>system-ui, sans-serif</code></td>
+      <td>Font family.</td>
+    </tr>
   </tbody>
 </table>
 
@@ -38,12 +116,28 @@ import '@we-are-singular/svelte-chop-chop/themes/minimal';</code></pre>
 
 <table>
   <thead>
-    <tr><th>Variable</th><th>Default</th><th>Description</th></tr>
+    <tr>
+      <th>Variable</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
   </thead>
   <tbody>
-    <tr><td><code>--chop-text</code></td><td><code>rgba(255,255,255,0.87)</code></td><td>Primary text color.</td></tr>
-    <tr><td><code>--chop-text-muted</code></td><td><code>rgba(255,255,255,0.5)</code></td><td>Secondary/muted text.</td></tr>
-    <tr><td><code>--chop-text-xs</code></td><td><code>0.7rem</code></td><td>Extra-small font size (labels).</td></tr>
+    <tr>
+      <td><code>--chop-text</code></td>
+      <td><code>rgba(255,255,255,0.87)</code></td>
+      <td>Primary text color.</td>
+    </tr>
+    <tr>
+      <td><code>--chop-text-muted</code></td>
+      <td><code>rgba(255,255,255,0.5)</code></td>
+      <td>Secondary/muted text.</td>
+    </tr>
+    <tr>
+      <td><code>--chop-text-xs</code></td>
+      <td><code>0.7rem</code></td>
+      <td>Extra-small font size (labels).</td>
+    </tr>
   </tbody>
 </table>
 
@@ -51,15 +145,43 @@ import '@we-are-singular/svelte-chop-chop/themes/minimal';</code></pre>
 
 <table>
   <thead>
-    <tr><th>Variable</th><th>Default</th><th>Description</th></tr>
+    <tr>
+      <th>Variable</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
   </thead>
   <tbody>
-    <tr><td><code>--chop-stencil-border</code></td><td><code>rgba(255,255,255,0.8)</code></td><td>Stencil border color.</td></tr>
-    <tr><td><code>--chop-stencil-border-width</code></td><td><code>1.5px</code></td><td>Stencil border thickness.</td></tr>
-    <tr><td><code>--chop-overlay-bg</code></td><td><code>rgba(0,0,0,0.55)</code></td><td>Dark overlay outside stencil.</td></tr>
-    <tr><td><code>--chop-handle-size</code></td><td><code>14px</code></td><td>Drag handle hit area.</td></tr>
-    <tr><td><code>--chop-handle-color</code></td><td><code>#fff</code></td><td>Drag handle visual color.</td></tr>
-    <tr><td><code>--chop-grid-color</code></td><td><code>rgba(255,255,255,0.3)</code></td><td>Rule-of-thirds grid lines.</td></tr>
+    <tr>
+      <td><code>--chop-stencil-border</code></td>
+      <td><code>rgba(255,255,255,0.8)</code></td>
+      <td>Stencil border color.</td>
+    </tr>
+    <tr>
+      <td><code>--chop-stencil-border-width</code></td>
+      <td><code>1.5px</code></td>
+      <td>Stencil border thickness.</td>
+    </tr>
+    <tr>
+      <td><code>--chop-overlay-bg</code></td>
+      <td><code>rgba(0,0,0,0.55)</code></td>
+      <td>Dark overlay outside stencil.</td>
+    </tr>
+    <tr>
+      <td><code>--chop-handle-size</code></td>
+      <td><code>14px</code></td>
+      <td>Drag handle hit area.</td>
+    </tr>
+    <tr>
+      <td><code>--chop-handle-color</code></td>
+      <td><code>#fff</code></td>
+      <td>Drag handle visual color.</td>
+    </tr>
+    <tr>
+      <td><code>--chop-grid-color</code></td>
+      <td><code>rgba(255,255,255,0.3)</code></td>
+      <td>Rule-of-thirds grid lines.</td>
+    </tr>
   </tbody>
 </table>
 
@@ -67,14 +189,38 @@ import '@we-are-singular/svelte-chop-chop/themes/minimal';</code></pre>
 
 <table>
   <thead>
-    <tr><th>Variable</th><th>Default</th><th>Description</th></tr>
+    <tr>
+      <th>Variable</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
   </thead>
   <tbody>
-    <tr><td><code>--chop-toolbar-height</code></td><td><code>48px</code></td><td>Tab bar height.</td></tr>
-    <tr><td><code>--chop-panel-height</code></td><td><code>100px</code></td><td>Panel strip height.</td></tr>
-    <tr><td><code>--chop-accent</code></td><td><code>#4a9eff</code></td><td>Active tab / accent color.</td></tr>
-    <tr><td><code>--chop-tab-color</code></td><td><code>rgba(255,255,255,0.5)</code></td><td>Inactive tab color.</td></tr>
-    <tr><td><code>--chop-tab-active-color</code></td><td><code>#4a9eff</code></td><td>Active tab color.</td></tr>
+    <tr>
+      <td><code>--chop-toolbar-height</code></td>
+      <td><code>48px</code></td>
+      <td>Tab bar height.</td>
+    </tr>
+    <tr>
+      <td><code>--chop-panel-height</code></td>
+      <td><code>100px</code></td>
+      <td>Panel strip height.</td>
+    </tr>
+    <tr>
+      <td><code>--chop-accent</code></td>
+      <td><code>#4a9eff</code></td>
+      <td>Active tab / accent color.</td>
+    </tr>
+    <tr>
+      <td><code>--chop-tab-color</code></td>
+      <td><code>rgba(255,255,255,0.5)</code></td>
+      <td>Inactive tab color.</td>
+    </tr>
+    <tr>
+      <td><code>--chop-tab-active-color</code></td>
+      <td><code>#4a9eff</code></td>
+      <td>Active tab color.</td>
+    </tr>
   </tbody>
 </table>
 
@@ -82,12 +228,28 @@ import '@we-are-singular/svelte-chop-chop/themes/minimal';</code></pre>
 
 <table>
   <thead>
-    <tr><th>Variable</th><th>Default</th><th>Description</th></tr>
+    <tr>
+      <th>Variable</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
   </thead>
   <tbody>
-    <tr><td><code>--chop-slider-track</code></td><td><code>rgba(255,255,255,0.15)</code></td><td>Slider track background.</td></tr>
-    <tr><td><code>--chop-slider-fill</code></td><td><code>#4a9eff</code></td><td>Slider fill color.</td></tr>
-    <tr><td><code>--chop-slider-thumb</code></td><td><code>#fff</code></td><td>Slider thumb color.</td></tr>
+    <tr>
+      <td><code>--chop-slider-track</code></td>
+      <td><code>rgba(255,255,255,0.15)</code></td>
+      <td>Slider track background.</td>
+    </tr>
+    <tr>
+      <td><code>--chop-slider-fill</code></td>
+      <td><code>#4a9eff</code></td>
+      <td>Slider fill color.</td>
+    </tr>
+    <tr>
+      <td><code>--chop-slider-thumb</code></td>
+      <td><code>#fff</code></td>
+      <td>Slider thumb color.</td>
+    </tr>
   </tbody>
 </table>
 

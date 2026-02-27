@@ -24,7 +24,7 @@
       if (lastExportUrl) URL.revokeObjectURL(lastExportUrl);
       lastExportUrl = URL.createObjectURL(result.blob);
       const kb = (result.blob.size / 1024).toFixed(1);
-      toast(`Exported successfully (${kb} KB)`, 'success');
+      toast(`Exported successfully (${kb} KB)`, "success");
     }
   }
 
@@ -82,6 +82,16 @@
   <title>svelte-chop-chop — Image editor SDK for Svelte 5</title>
   <meta
     name="description"
+    content="Open-source image editor SDK for Svelte 5. Crop, rotate, filter, and export images with a modular plugin architecture. Zero dependencies."
+  />
+  <link rel="canonical" href="https://svelte-chop-chop.pages.dev/" />
+  <meta property="og:url" content="https://svelte-chop-chop.pages.dev/" />
+  <meta
+    property="og:title"
+    content="svelte-chop-chop — Image editor SDK for Svelte 5"
+  />
+  <meta
+    property="og:description"
     content="Open-source image editor SDK for Svelte 5. Crop, rotate, filter, and export images with a modular plugin architecture."
   />
 </svelte:head>
@@ -108,17 +118,21 @@
       composable API and ready-to-use components.
     </p>
     <div class="hero-install">
-      <code class="hero-install-code">npm i @we-are-singular/svelte-chop-chop</code>
+      <code class="hero-install-code">
+        npm i @we-are-singular/svelte-chop-chop
+      </code>
       <button
         class="hero-install-copy"
         onclick={() => {
-          navigator.clipboard.writeText('npm i @we-are-singular/svelte-chop-chop');
+          navigator.clipboard.writeText(
+            "npm i @we-are-singular/svelte-chop-chop",
+          );
           installCopied = true;
           setTimeout(() => (installCopied = false), 2000);
         }}
         aria-label="Copy install command"
       >
-        {installCopied ? '✓' : 'Copy'}
+        {installCopied ? "✓" : "Copy"}
       </button>
     </div>
     <div class="hero-actions">
@@ -137,7 +151,8 @@
     <h2 class="section-title">Try it live</h2>
     <p class="demo-intro">
       Crop, rotate, apply filters, add a watermark or frame — then hit
-      <strong>Done</strong> to export.
+      <strong>Done</strong>
+       to export.
     </p>
   </div>
 
@@ -206,13 +221,31 @@
 <footer class="site-footer">
   <p>
     MIT License ·
-    <a href="https://github.com/we-are-singular/svelte-chop-chop" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a
+      href="https://github.com/we-are-singular/svelte-chop-chop"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      GitHub
+    </a>
     ·
-    <a href="https://www.npmjs.com/package/@we-are-singular/svelte-chop-chop" target="_blank" rel="noopener noreferrer">npm</a>
+    <a
+      href="https://www.npmjs.com/package/@we-are-singular/svelte-chop-chop"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      npm
+    </a>
     · Built with Svelte 5
   </p>
   <p class="footer-singular">
-    Made with ❤️ by <a href="https://wearesingular.com" target="_blank" rel="noopener noreferrer">Singular</a>
+    Made with ❤️ by <a
+      href="https://wearesingular.com"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Singular
+    </a>
   </p>
 </footer>
 
@@ -284,7 +317,7 @@
     padding: 0.6rem 0.6rem 0.6rem 1.1rem;
     gap: 0.75rem;
     margin-bottom: 1.5rem;
-    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    font-family: "Fira Code", "Cascadia Code", monospace;
   }
 
   .hero-install-code {
@@ -303,7 +336,9 @@
     font-size: 0.8rem;
     font-family: inherit;
     cursor: pointer;
-    transition: color 0.15s, background 0.15s;
+    transition:
+      color 0.15s,
+      background 0.15s;
     white-space: nowrap;
   }
 
@@ -337,7 +372,7 @@
   .demo-bg {
     position: absolute;
     inset: -60px;
-    background-image: url('https://picsum.photos/id/10/900/600');
+    background-image: url("https://picsum.photos/id/10/900/600");
     background-size: cover;
     background-position: center;
     filter: blur(50px);

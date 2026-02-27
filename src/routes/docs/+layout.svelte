@@ -1,95 +1,94 @@
 <!-- Docs section — two-column sidebar layout -->
 <script lang="ts">
-  import { page } from '$app/stores';
-  import type { Snippet } from 'svelte';
+  import { page } from "$app/stores";
+  import type { Snippet } from "svelte";
+  import "svelte-highlight/styles/github-dark.css";
+  import hljs from "highlight.js/lib/core";
+  import xml from "highlight.js/lib/languages/xml";
+  import javascript from "highlight.js/lib/languages/javascript";
+  import bash from "highlight.js/lib/languages/bash";
+
+  hljs.registerLanguage("xml", xml);
+  hljs.registerLanguage("javascript", javascript);
+  hljs.registerLanguage("bash", bash);
 
   let { children }: { children: Snippet } = $props();
 
+  const BASE_URL = "https://svelte-chop-chop.pages.dev";
+  const canonicalUrl = $derived(
+    `${BASE_URL}${$page.url.pathname}`.replace(/\/$/, "") || `${BASE_URL}/`,
+  );
+
   const navLinks = [
-    { href: '/docs/getting-started', label: 'Getting Started' },
-    { href: '/docs/cropper', label: 'Cropper' },
-    { href: '/docs/image-editor', label: 'ImageEditor' },
-    { href: '/docs/plugins', label: 'Plugins' },
-    { href: '/docs/custom-stencil', label: 'Custom Stencil' },
-    { href: '/docs/theming', label: 'Theming' },
+    { href: "/docs/getting-started", label: "Getting Started" },
+    { href: "/docs/cropper", label: "Cropper" },
+    { href: "/docs/image-editor", label: "ImageEditor" },
+    { href: "/docs/plugins", label: "Plugins" },
+    { href: "/docs/custom-stencil", label: "Custom Stencil" },
+    { href: "/docs/theming", label: "Theming" },
   ];
 
   const current = $derived($page.url.pathname);
 
-  // --- Code block enhancement: syntax highlighting + copy button ---
-  const KEYWORDS = /\b(import|export|from|const|let|var|function|async|await|return|if|else|new|type|interface|class|extends|typeof|null|true|false|void|undefined)\b/g;
-  const STRINGS_RE = /(&#39;[^&#39;]*&#39;|&quot;[^&quot;]*&quot;|'[^']*'|"[^"]*")/g;
-  const COMMENTS_RE = /(\/\/[^\n]*)/g;
-  const TYPES_RE = /\b(string|number|boolean|HTMLCanvasElement|HTMLImageElement|HTMLElement|Blob|File|Rect|Point|Size|CropCoordinates|TransformState|FilterState|ExportResult|ExportOptions|ChopPlugin|PluginContext|Component|Snippet|ImageSource|AspectRatio|SizeConstraints|GridType|StencilProps|Error|Promise|void|WatermarkSettings|FrameSettings)\b/g;
-  const HTML_TAGS_RE = /(&lt;\/?)([\w-]+)/g;
-  const NUMBERS_RE = /\b(\d+\.?\d*)\b/g;
-
-  function highlight(code: string): string {
-    const strings: string[] = [];
-    let result = code.replace(STRINGS_RE, (match) => {
-      strings.push(`<span class="hl-str">${match}</span>`);
-      return `__S${strings.length - 1}__`;
-    });
-
-    const comments: string[] = [];
-    result = result.replace(COMMENTS_RE, (match) => {
-      comments.push(`<span class="hl-cmt">${match}</span>`);
-      return `__C${comments.length - 1}__`;
-    });
-
-    result = result.replace(HTML_TAGS_RE, (_, prefix, tag) =>
-      `${prefix}<span class="hl-tag">${tag}</span>`
-    );
-    result = result.replace(TYPES_RE, '<span class="hl-typ">$1</span>');
-    result = result.replace(KEYWORDS, '<span class="hl-kw">$1</span>');
-    result = result.replace(NUMBERS_RE, '<span class="hl-num">$1</span>');
-
-    comments.forEach((s, i) => { result = result.replace(`__C${i}__`, s); });
-    strings.forEach((s, i) => { result = result.replace(`__S${i}__`, s); });
-
-    return result;
+  function detectLanguage(code: string): string {
+    if (/^npm install|^pnpm |^yarn |^bun /.test(code.trim())) return "bash";
+    if (/^peerDependencies:/.test(code.trim())) return "bash";
+    return "xml"; // Svelte/HTML/TS mix
   }
 
   let contentEl = $state<HTMLElement | undefined>();
 
   function enhanceCodeBlocks() {
     if (!contentEl) return;
-    for (const pre of contentEl.querySelectorAll('pre')) {
-      if (pre.querySelector('.copy-btn')) continue;
-      const codeEl = pre.querySelector('code');
+    for (const pre of contentEl.querySelectorAll("pre")) {
+      if (pre.closest(".code-block")) continue; // Skip CodeBlock (uses HighlightSvelte)
+      if (pre.querySelector(".copy-btn")) continue;
+      const codeEl = pre.querySelector("code");
       if (!codeEl) continue;
 
-      codeEl.innerHTML = highlight(codeEl.innerHTML);
+      const rawCode = codeEl.textContent ?? "";
+      const lang = detectLanguage(rawCode);
+      try {
+        codeEl.innerHTML = hljs.highlight(rawCode, { language: lang }).value;
+      } catch {
+        codeEl.textContent = rawCode;
+      }
+      codeEl.classList.add("hljs");
 
-      const btn = document.createElement('button');
-      btn.className = 'copy-btn';
-      btn.textContent = 'Copy';
-      btn.setAttribute('aria-label', 'Copy code to clipboard');
-      btn.addEventListener('click', async () => {
+      const btn = document.createElement("button");
+      btn.className = "copy-btn";
+      btn.textContent = "Copy";
+      btn.setAttribute("aria-label", "Copy code to clipboard");
+      btn.addEventListener("click", async () => {
         try {
-          await navigator.clipboard.writeText(codeEl.textContent ?? '');
-          btn.textContent = 'Copied!';
-          btn.classList.add('copied');
-          setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+          await navigator.clipboard.writeText(rawCode);
+          btn.textContent = "Copied!";
+          btn.classList.add("copied");
+          setTimeout(() => {
+            btn.textContent = "Copy";
+            btn.classList.remove("copied");
+          }, 2000);
         } catch {
-          btn.textContent = 'Failed';
-          setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+          btn.textContent = "Failed";
+          setTimeout(() => (btn.textContent = "Copy"), 2000);
         }
       });
 
-      pre.style.position = 'relative';
+      pre.style.position = "relative";
       pre.appendChild(btn);
     }
   }
 
-  // Re-run enhancement whenever the page changes
   $effect(() => {
-    // Track page path to re-run on navigation
     void $page.url.pathname;
-    // Use tick to wait for DOM update
     requestAnimationFrame(enhanceCodeBlocks);
   });
 </script>
+
+<svelte:head>
+  <link rel="canonical" href={canonicalUrl} />
+  <meta property="og:url" content={canonicalUrl} />
+</svelte:head>
 
 <div class="docs-layout">
   <aside class="docs-sidebar">
@@ -139,7 +138,9 @@
     color: rgba(255, 255, 255, 0.6);
     text-decoration: none;
     margin-bottom: 0.15rem;
-    transition: color 0.15s, background 0.15s;
+    transition:
+      color 0.15s,
+      background 0.15s;
   }
 
   .sidebar-link:hover,
@@ -161,6 +162,8 @@
 
   .docs-content {
     max-width: 780px;
+    width: 100%;
+    margin: 0 auto;
   }
 
   /* Shared doc prose styles */
@@ -223,7 +226,7 @@
   }
 
   .docs-content :global(code) {
-    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    font-family: "Fira Code", "Cascadia Code", monospace;
     font-size: 0.875em;
     background: rgba(255, 255, 255, 0.07);
     border-radius: 4px;
@@ -289,7 +292,10 @@
     font-size: 0.75rem;
     font-family: inherit;
     cursor: pointer;
-    transition: color 0.15s, background 0.15s, border-color 0.15s;
+    transition:
+      color 0.15s,
+      background 0.15s,
+      border-color 0.15s;
     z-index: 2;
   }
 
@@ -304,11 +310,5 @@
     border-color: rgba(34, 197, 94, 0.4);
   }
 
-  /* Syntax highlighting */
-  .docs-content :global(.hl-kw) { color: #c678dd; }
-  .docs-content :global(.hl-str) { color: #98c379; }
-  .docs-content :global(.hl-cmt) { color: rgba(255, 255, 255, 0.35); font-style: italic; }
-  .docs-content :global(.hl-typ) { color: #e5c07b; }
-  .docs-content :global(.hl-tag) { color: #e06c75; }
-  .docs-content :global(.hl-num) { color: #d19a66; }
+  /* Syntax highlighting via svelte-highlight / highlight.js (github-dark theme) */
 </style>
