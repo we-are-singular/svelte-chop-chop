@@ -50,7 +50,7 @@
   The context provides everything needed to hook into the editor:
 </p>
 
-<pre><code>import type &#123; ChopPlugin, PluginContext &#125; from 'svelte-chop-chop';
+<pre><code>import type &#123; ChopPlugin, PluginContext &#125; from '@we-are-singular/svelte-chop-chop';
 
 export const myPlugin: ChopPlugin = &#123;
   setup(ctx: PluginContext) &#123;

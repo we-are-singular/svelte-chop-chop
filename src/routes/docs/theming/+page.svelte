@@ -9,13 +9,13 @@
 <p>Import exactly one theme in your app entry point or layout:</p>
 
 <pre><code>// Default (dark blue-grey)
-import 'svelte-chop-chop/themes/default';
+import '@we-are-singular/svelte-chop-chop/themes/default';
 
 // Pure dark
-import 'svelte-chop-chop/themes/dark';
+import '@we-are-singular/svelte-chop-chop/themes/dark';
 
 // Minimal (no chrome, white overlay)
-import 'svelte-chop-chop/themes/minimal';</code></pre>
+import '@we-are-singular/svelte-chop-chop/themes/minimal';</code></pre>
 
 <h2>CSS custom properties reference</h2>
 
@@ -108,5 +108,5 @@ import 'svelte-chop-chop/themes/minimal';</code></pre>
 
 <p>Import it after the base theme:</p>
 
-<pre><code>import 'svelte-chop-chop/themes/dark';
+<pre><code>import '@we-are-singular/svelte-chop-chop/themes/dark';
 import './my-theme.css';</code></pre>

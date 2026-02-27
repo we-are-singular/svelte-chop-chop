@@ -6,7 +6,7 @@
 
 <h2>Import</h2>
 
-<pre><code>import &#123; ImageEditor &#125; from 'svelte-chop-chop';</code></pre>
+<pre><code>import &#123; ImageEditor &#125; from '@we-are-singular/svelte-chop-chop';</code></pre>
 
 <h2>Props</h2>
 
@@ -65,13 +65,13 @@
 <h2>Full example with all plugins</h2>
 
 <pre><code>&lt;script lang="ts"&gt;
-  import &#123; ImageEditor &#125; from 'svelte-chop-chop';
-  import &#123; pluginFilters &#125; from 'svelte-chop-chop/plugins/filters';
-  import &#123; pluginFinetune &#125; from 'svelte-chop-chop/plugins/finetune';
-  import &#123; pluginFrame &#125; from 'svelte-chop-chop/plugins/frame';
-  import &#123; pluginWatermark &#125; from 'svelte-chop-chop/plugins/watermark';
-  import &#123; pluginResize &#125; from 'svelte-chop-chop/plugins/resize';
-  import 'svelte-chop-chop/themes/default';
+  import &#123; ImageEditor &#125; from '@we-are-singular/svelte-chop-chop';
+  import &#123; pluginFilters &#125; from '@we-are-singular/svelte-chop-chop/plugins/filters';
+  import &#123; pluginFinetune &#125; from '@we-are-singular/svelte-chop-chop/plugins/finetune';
+  import &#123; pluginFrame &#125; from '@we-are-singular/svelte-chop-chop/plugins/frame';
+  import &#123; pluginWatermark &#125; from '@we-are-singular/svelte-chop-chop/plugins/watermark';
+  import &#123; pluginResize &#125; from '@we-are-singular/svelte-chop-chop/plugins/resize';
+  import '@we-are-singular/svelte-chop-chop/themes/default';
 
   function handleExport(blob: Blob) &#123;
     const url = URL.createObjectURL(blob);
@@ -92,8 +92,8 @@
 <h2>Upload to server example</h2>
 
 <pre><code>&lt;script lang="ts"&gt;
-  import &#123; ImageEditor &#125; from 'svelte-chop-chop';
-  import &#123; pluginFilters &#125; from 'svelte-chop-chop/plugins/filters';
+  import &#123; ImageEditor &#125; from '@we-are-singular/svelte-chop-chop';
+  import &#123; pluginFilters &#125; from '@we-are-singular/svelte-chop-chop/plugins/filters';
 
   async function handleExport(blob: Blob) &#123;
     const formData = new FormData();
@@ -137,9 +137,9 @@
   It returns a reactive state object with all actions:
 </p>
 
-<pre><code>import &#123; createImageEditor &#125; from 'svelte-chop-chop/headless';
-import &#123; pluginFilters &#125; from 'svelte-chop-chop/plugins/filters';
-import &#123; pluginFinetune &#125; from 'svelte-chop-chop/plugins/finetune';
+<pre><code>import &#123; createImageEditor &#125; from '@we-are-singular/svelte-chop-chop/headless';
+import &#123; pluginFilters &#125; from '@we-are-singular/svelte-chop-chop/plugins/filters';
+import &#123; pluginFinetune &#125; from '@we-are-singular/svelte-chop-chop/plugins/finetune';
 
 const editor = createImageEditor(&#123;
   plugins: [pluginFilters(), pluginFinetune()],

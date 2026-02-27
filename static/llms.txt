@@ -6,8 +6,8 @@
 
 ```svelte
 <script lang="ts">
-  import { Cropper } from 'svelte-chop-chop';
-  import 'svelte-chop-chop/themes/default';
+  import { Cropper } from '@we-are-singular/svelte-chop-chop';
+  import '@we-are-singular/svelte-chop-chop/themes/default';
 </script>
 
 <Cropper src="/photo.jpg" aspectRatio={16 / 9} style="height: 400px;" />
@@ -15,13 +15,13 @@
 
 ```svelte
 <script lang="ts">
-  import { ImageEditor } from 'svelte-chop-chop';
-  import { pluginFilters } from 'svelte-chop-chop/plugins/filters';
-  import { pluginFinetune } from 'svelte-chop-chop/plugins/finetune';
-  import { pluginFrame } from 'svelte-chop-chop/plugins/frame';
-  import { pluginWatermark } from 'svelte-chop-chop/plugins/watermark';
-  import { pluginResize } from 'svelte-chop-chop/plugins/resize';
-  import 'svelte-chop-chop/themes/default';
+  import { ImageEditor } from '@we-are-singular/svelte-chop-chop';
+  import { pluginFilters } from '@we-are-singular/svelte-chop-chop/plugins/filters';
+  import { pluginFinetune } from '@we-are-singular/svelte-chop-chop/plugins/finetune';
+  import { pluginFrame } from '@we-are-singular/svelte-chop-chop/plugins/frame';
+  import { pluginWatermark } from '@we-are-singular/svelte-chop-chop/plugins/watermark';
+  import { pluginResize } from '@we-are-singular/svelte-chop-chop/plugins/resize';
+  import '@we-are-singular/svelte-chop-chop/themes/default';
 
   function handleExport(result: ExportResult) {
     const url = URL.createObjectURL(result.blob!);
@@ -45,18 +45,18 @@
 
 | Path | Description |
 |------|-------------|
-| `svelte-chop-chop` | Components, composables, core utilities, types |
-| `svelte-chop-chop/headless` | `createCropper` composable for headless usage |
-| `svelte-chop-chop/plugins` | All plugin factories + `FILTER_PRESETS` |
-| `svelte-chop-chop/plugins/filters` | `pluginFilters` |
-| `svelte-chop-chop/plugins/finetune` | `pluginFinetune` |
-| `svelte-chop-chop/plugins/frame` | `pluginFrame` |
-| `svelte-chop-chop/plugins/watermark` | `pluginWatermark` |
-| `svelte-chop-chop/plugins/resize` | `pluginResize` |
-| `svelte-chop-chop/presets` | `profilePicture`, `coverPhoto`, `productImage` |
-| `svelte-chop-chop/themes/default` | Default CSS theme |
-| `svelte-chop-chop/themes/dark` | Dark CSS theme |
-| `svelte-chop-chop/themes/minimal` | Minimal CSS theme |
+| `@we-are-singular/svelte-chop-chop` | Components, composables, core utilities, types |
+| `@we-are-singular/svelte-chop-chop/headless` | `createCropper` composable for headless usage |
+| `@we-are-singular/svelte-chop-chop/plugins` | All plugin factories + `FILTER_PRESETS` |
+| `@we-are-singular/svelte-chop-chop/plugins/filters` | `pluginFilters` |
+| `@we-are-singular/svelte-chop-chop/plugins/finetune` | `pluginFinetune` |
+| `@we-are-singular/svelte-chop-chop/plugins/frame` | `pluginFrame` |
+| `@we-are-singular/svelte-chop-chop/plugins/watermark` | `pluginWatermark` |
+| `@we-are-singular/svelte-chop-chop/plugins/resize` | `pluginResize` |
+| `@we-are-singular/svelte-chop-chop/presets` | `profilePicture`, `coverPhoto`, `productImage` |
+| `@we-are-singular/svelte-chop-chop/themes/default` | Default CSS theme |
+| `@we-are-singular/svelte-chop-chop/themes/dark` | Dark CSS theme |
+| `@we-are-singular/svelte-chop-chop/themes/minimal` | Minimal CSS theme |
 
 ---
 
@@ -180,8 +180,8 @@ Default rectangular stencil with 8 resize handles (4 if aspect ratio is fixed).
 Full editor orchestrator — use this for complete custom UI.
 
 ```typescript
-import { createImageEditor } from 'svelte-chop-chop';
-import { pluginFilters } from 'svelte-chop-chop/plugins/filters';
+import { createImageEditor } from '@we-are-singular/svelte-chop-chop';
+import { pluginFilters } from '@we-are-singular/svelte-chop-chop/plugins/filters';
 
 const editor = createImageEditor({
   plugins: [pluginFilters()],
@@ -269,7 +269,7 @@ const result = await editor.export({
 Lightweight headless cropper (no editor, no plugins).
 
 ```typescript
-import { createCropper } from 'svelte-chop-chop/headless';
+import { createCropper } from '@we-are-singular/svelte-chop-chop/headless';
 
 const cropper = createCropper({
   aspectRatio: 16 / 9,
@@ -311,7 +311,7 @@ Plugins add features to `ImageEditor` and `createImageEditor` via a setup functi
 16 Instagram-style color filter presets.
 
 ```typescript
-import { pluginFilters } from 'svelte-chop-chop/plugins/filters';
+import { pluginFilters } from '@we-are-singular/svelte-chop-chop/plugins/filters';
 
 const plugins = [pluginFilters()];
 // Optional: pass custom presets
@@ -327,7 +327,7 @@ Keyboard shortcut: `Ctrl+F` toggles filter panel.
 Brightness, contrast, saturation, exposure, temperature, clarity, and gamma sliders.
 
 ```typescript
-import { pluginFinetune } from 'svelte-chop-chop/plugins/finetune';
+import { pluginFinetune } from '@we-are-singular/svelte-chop-chop/plugins/finetune';
 
 const plugins = [pluginFinetune()];
 ```
@@ -339,7 +339,7 @@ const plugins = [pluginFinetune()];
 Decorative frame overlay applied at export.
 
 ```typescript
-import { pluginFrame } from 'svelte-chop-chop/plugins/frame';
+import { pluginFrame } from '@we-are-singular/svelte-chop-chop/plugins/frame';
 
 const plugins = [pluginFrame()];
 ```
@@ -351,7 +351,7 @@ const plugins = [pluginFrame()];
 Text watermark overlay applied at export.
 
 ```typescript
-import { pluginWatermark } from 'svelte-chop-chop/plugins/watermark';
+import { pluginWatermark } from '@we-are-singular/svelte-chop-chop/plugins/watermark';
 
 const plugins = [pluginWatermark()];
 ```
@@ -363,7 +363,7 @@ const plugins = [pluginWatermark()];
 Output width/height controls.
 
 ```typescript
-import { pluginResize } from 'svelte-chop-chop/plugins/resize';
+import { pluginResize } from '@we-are-singular/svelte-chop-chop/plugins/resize';
 
 const plugins = [pluginResize()];
 ```
@@ -413,7 +413,7 @@ const myPlugin: ChopPlugin = {
 Pre-configured bundles for common use cases. Spread into component props or composable options.
 
 ```typescript
-import { profilePicture, coverPhoto, productImage } from 'svelte-chop-chop/presets';
+import { profilePicture, coverPhoto, productImage } from '@we-are-singular/svelte-chop-chop/presets';
 ```
 
 ### profilePicture
@@ -699,7 +699,7 @@ interface EditorEvents {
 Import one CSS theme and override CSS custom properties as needed.
 
 ```css
-@import 'svelte-chop-chop/themes/default';
+@import '@we-are-singular/svelte-chop-chop/themes/default';
 ```
 
 **CSS Custom Properties:**
@@ -726,9 +726,9 @@ Import one CSS theme and override CSS custom properties as needed.
 
 ```svelte
 <script lang="ts">
-  import { ImageEditor } from 'svelte-chop-chop';
-  import { pluginFilters } from 'svelte-chop-chop/plugins/filters';
-  import 'svelte-chop-chop/themes/default';
+  import { ImageEditor } from '@we-are-singular/svelte-chop-chop';
+  import { pluginFilters } from '@we-are-singular/svelte-chop-chop/plugins/filters';
+  import '@we-are-singular/svelte-chop-chop/themes/default';
 
   async function handleExport(result: ExportResult) {
     const formData = new FormData();

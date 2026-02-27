@@ -1,10 +1,38 @@
 {
-  "name": "svelte-chop-chop",
-  "version": "0.0.1",
+  "name": "@we-are-singular/svelte-chop-chop",
+  "version": "0.1.0",
+  "description": "Headless-first image cropping and editing SDK for Svelte 5. Zero runtime dependencies.",
   "type": "module",
+  "license": "MIT",
+  "author": {
+    "name": "We Are Singular",
+    "url": "https://wearesingular.com"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://svelte-chop-chop.pages.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/we-are-singular/svelte-chop-chop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/we-are-singular/svelte-chop-chop/issues"
+  },
+  "keywords": [
+    "svelte",
+    "svelte5",
+    "image",
+    "crop",
+    "cropper",
+    "image-editor",
+    "canvas",
+    "headless",
+    "runes"
+  ],
   "scripts": {
     "dev": "vite dev",
-    "build": "svelte-package -i src/lib -o dist",
+    "build": "svelte-package -i src/lib -o dist && find dist -name '*.test.js' -delete && find dist -name '*.test.d.ts' -delete",
     "build:app": "vite build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",

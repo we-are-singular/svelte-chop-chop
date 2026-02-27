@@ -1,0 +1,5 @@
+# Exclude test files from the published package
+dist/**/*.test.js
+dist/**/*.test.d.ts
+dist/**/*.test.svelte.js
+dist/**/*.test.svelte.d.ts

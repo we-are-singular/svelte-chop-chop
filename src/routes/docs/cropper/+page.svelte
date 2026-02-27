@@ -6,7 +6,7 @@
 
 <h2>Import</h2>
 
-<pre><code>import &#123; Cropper &#125; from 'svelte-chop-chop';</code></pre>
+<pre><code>import &#123; Cropper &#125; from '@we-are-singular/svelte-chop-chop';</code></pre>
 
 <h2>Props</h2>
 
@@ -231,7 +231,7 @@
 <p>Use the built-in <code>CropStencil</code> (rectangular) or <code>CircleStencil</code> (circular mask):</p>
 
 <pre><code>&lt;script lang="ts"&gt;
-  import &#123; Cropper, CircleStencil &#125; from 'svelte-chop-chop';
+  import &#123; Cropper, CircleStencil &#125; from '@we-are-singular/svelte-chop-chop';
 &lt;/script&gt;
 
 &lt;Cropper src="/avatar.jpg" aspectRatio=&#123;1&#125; stencil=&#123;CircleStencil&#125; /&gt;</code></pre>
@@ -243,8 +243,8 @@
 <p>Bind <code>this</code> to get a reference to the cropper instance and call <code>export()</code>:</p>
 
 <pre><code>&lt;script lang="ts"&gt;
-  import &#123; Cropper &#125; from 'svelte-chop-chop';
-  import type &#123; ExportResult &#125; from 'svelte-chop-chop';
+  import &#123; Cropper &#125; from '@we-are-singular/svelte-chop-chop';
+  import type &#123; ExportResult &#125; from '@we-are-singular/svelte-chop-chop';
 
   let cropper: Cropper;
 
@@ -291,8 +291,8 @@
 <p>Spread a preset to preconfigure the Cropper for common use cases:</p>
 
 <pre><code>&lt;script lang="ts"&gt;
-  import &#123; Cropper &#125; from 'svelte-chop-chop';
-  import &#123; profilePicture &#125; from 'svelte-chop-chop/presets';
+  import &#123; Cropper &#125; from '@we-are-singular/svelte-chop-chop';
+  import &#123; profilePicture &#125; from '@we-are-singular/svelte-chop-chop/presets';
 &lt;/script&gt;
 
 &lt;Cropper src="/photo.jpg" &#123;...profilePicture&#125; /&gt;</code></pre>

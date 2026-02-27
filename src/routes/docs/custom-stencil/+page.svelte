@@ -58,8 +58,8 @@
 </p>
 
 <pre><code>&lt;script lang="ts"&gt;
-  import &#123; DragHandle &#125; from 'svelte-chop-chop';
-  import type &#123; StencilProps &#125; from 'svelte-chop-chop';
+  import &#123; DragHandle &#125; from '@we-are-singular/svelte-chop-chop';
+  import type &#123; StencilProps &#125; from '@we-are-singular/svelte-chop-chop';
 
   let &#123; cropRect, onmove, onresize, grid, gridOnlyActive &#125;: StencilProps = $props();
 &lt;/script&gt;
@@ -90,7 +90,7 @@
 <h2>Passing the custom stencil</h2>
 
 <pre><code>&lt;script lang="ts"&gt;
-  import &#123; Cropper &#125; from 'svelte-chop-chop';
+  import &#123; Cropper &#125; from '@we-are-singular/svelte-chop-chop';
   import MyStencil from './MyStencil.svelte';
 &lt;/script&gt;
 
@@ -103,7 +103,7 @@
   overlay with a transparent cutout over the crop rect:
 </p>
 
-<pre><code>import &#123; CropOverlay &#125; from 'svelte-chop-chop';
+<pre><code>import &#123; CropOverlay &#125; from '@we-are-singular/svelte-chop-chop';
 
 &lt;CropOverlay &#123;cropRect&#125; containerRect=&#123;...&#125; /&gt;</code></pre>
 
@@ -113,7 +113,7 @@
   <code>GridOverlay</code> draws rule-of-thirds lines, a full grid, or a golden ratio guide:
 </p>
 
-<pre><code>import &#123; GridOverlay &#125; from 'svelte-chop-chop';
+<pre><code>import &#123; GridOverlay &#125; from '@we-are-singular/svelte-chop-chop';
 
 &lt;GridOverlay
   &#123;cropRect&#125;

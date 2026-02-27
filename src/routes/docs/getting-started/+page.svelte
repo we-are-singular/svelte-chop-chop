@@ -6,7 +6,7 @@
 
 <h2>Installation</h2>
 
-<pre><code>npm install svelte-chop-chop</code></pre>
+<pre><code>npm install @we-are-singular/svelte-chop-chop</code></pre>
 
 <h2>Peer dependencies</h2>
 
@@ -23,8 +23,8 @@
 </p>
 
 <pre><code>&lt;script lang="ts"&gt;
-  import &#123; Cropper &#125; from 'svelte-chop-chop';
-  import 'svelte-chop-chop/themes/default';
+  import &#123; Cropper &#125; from '@we-are-singular/svelte-chop-chop';
+  import '@we-are-singular/svelte-chop-chop/themes/default';
 
   let cropper = $state&lt;ReturnType&lt;typeof Cropper.create&gt;&gt;();
 
@@ -50,13 +50,13 @@
 </p>
 
 <pre><code>&lt;script lang="ts"&gt;
-  import &#123; ImageEditor &#125; from 'svelte-chop-chop';
-  import &#123; pluginFilters &#125; from 'svelte-chop-chop/plugins/filters';
-  import &#123; pluginFinetune &#125; from 'svelte-chop-chop/plugins/finetune';
-  import &#123; pluginFrame &#125; from 'svelte-chop-chop/plugins/frame';
-  import &#123; pluginWatermark &#125; from 'svelte-chop-chop/plugins/watermark';
-  import &#123; pluginResize &#125; from 'svelte-chop-chop/plugins/resize';
-  import 'svelte-chop-chop/themes/default';
+  import &#123; ImageEditor &#125; from '@we-are-singular/svelte-chop-chop';
+  import &#123; pluginFilters &#125; from '@we-are-singular/svelte-chop-chop/plugins/filters';
+  import &#123; pluginFinetune &#125; from '@we-are-singular/svelte-chop-chop/plugins/finetune';
+  import &#123; pluginFrame &#125; from '@we-are-singular/svelte-chop-chop/plugins/frame';
+  import &#123; pluginWatermark &#125; from '@we-are-singular/svelte-chop-chop/plugins/watermark';
+  import &#123; pluginResize &#125; from '@we-are-singular/svelte-chop-chop/plugins/resize';
+  import '@we-are-singular/svelte-chop-chop/themes/default';
 &lt;/script&gt;
 
 &lt;ImageEditor
@@ -73,7 +73,7 @@
 </p>
 
 <pre><code>&lt;script lang="ts"&gt;
-  import &#123; createCropper &#125; from 'svelte-chop-chop/headless';
+  import &#123; createCropper &#125; from '@we-are-singular/svelte-chop-chop/headless';
 
   const cropper = createCropper(&#123;
     aspectRatio: 16 / 9,
@@ -90,9 +90,9 @@
 
 <p>Three themes are included. Import exactly one:</p>
 
-<pre><code>import 'svelte-chop-chop/themes/default'; // recommended
-import 'svelte-chop-chop/themes/dark';
-import 'svelte-chop-chop/themes/minimal';</code></pre>
+<pre><code>import '@we-are-singular/svelte-chop-chop/themes/default'; // recommended
+import '@we-are-singular/svelte-chop-chop/themes/dark';
+import '@we-are-singular/svelte-chop-chop/themes/minimal';</code></pre>
 
 <h2>Next steps</h2>
 
