@@ -17,6 +17,7 @@
   ];
 
   let lastExportUrl = $state<string | null>(null);
+  let installCopied = $state(false);
 
   function handleExport(result: ExportResult) {
     if (result.blob) {
@@ -106,9 +107,23 @@
       rotate, flip, apply filters and export — all with a clean headless
       composable API and ready-to-use components.
     </p>
+    <div class="hero-install">
+      <code class="hero-install-code">npm i @we-are-singular/svelte-chop-chop</code>
+      <button
+        class="hero-install-copy"
+        onclick={() => {
+          navigator.clipboard.writeText('npm i @we-are-singular/svelte-chop-chop');
+          installCopied = true;
+          setTimeout(() => (installCopied = false), 2000);
+        }}
+        aria-label="Copy install command"
+      >
+        {installCopied ? '✓' : 'Copy'}
+      </button>
+    </div>
     <div class="hero-actions">
-      <a href="/docs/getting-started" class="btn btn-primary">Get Started</a>
-      <a href="#demo" class="btn btn-secondary">Try it below</a>
+      <a href="/docs/getting-started" class="btn btn-primary">Get Started →</a>
+      <a href="#demo" class="btn btn-secondary">Live demo</a>
     </div>
   </div>
 </section>
@@ -193,7 +208,7 @@
     MIT License ·
     <a href="https://github.com/we-are-singular/svelte-chop-chop" target="_blank" rel="noopener noreferrer">GitHub</a>
     ·
-    <a href="https://www.npmjs.com/package/svelte-chop-chop" target="_blank" rel="noopener noreferrer">npm</a>
+    <a href="https://www.npmjs.com/package/@we-are-singular/svelte-chop-chop" target="_blank" rel="noopener noreferrer">npm</a>
     · Built with Svelte 5
   </p>
 </footer>
@@ -255,6 +270,43 @@
     line-height: 1.7;
     margin: 0 auto 2rem;
     max-width: 600px;
+  }
+
+  .hero-install {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 0.6rem 0.6rem 0.6rem 1.1rem;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
+  }
+
+  .hero-install-code {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.85);
+    user-select: all;
+    letter-spacing: 0.01em;
+  }
+
+  .hero-install-copy {
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s;
+    white-space: nowrap;
+  }
+
+  .hero-install-copy:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.14);
   }
 
   .hero-actions {
