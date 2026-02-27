@@ -33,7 +33,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "svelte-package -i src/lib -o dist && find dist -name '*.test.js' -delete && find dist -name '*.test.d.ts' -delete",
-    "build:app": "vite build",
+    "build:app": "npm run build && node scripts/measure-bundle.mjs && vite build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",

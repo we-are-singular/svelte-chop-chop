@@ -9,6 +9,9 @@
   import type { ExportResult } from "$lib";
   import { toast } from "./toast.svelte.js";
 
+  let { data } = $props();
+  const bundleSize = $derived(data?.bundleSize ?? null);
+
   const allPlugins = [
     pluginFilters(),
     pluginFinetune(),
@@ -100,12 +103,23 @@
   <div class="hero-inner">
     <div class="hero-badges">
       <span class="hero-badge">Svelte 5 · TypeScript · Zero dependencies</span>
-      <span
-        class="hero-badge hero-badge-size"
-        title="Core cropper &lt; 12KB gzipped, full editor &lt; 30KB gzipped"
-      >
-        📦 &lt; 30KB gzipped
-      </span>
+      {#if bundleSize}
+        <span
+          class="hero-badge hero-badge-size"
+          title="Cropper {bundleSize.cropper
+            .gzipKb}KB gzipped · Full editor {bundleSize.full.gzipKb}KB gzipped"
+        >
+          📦 Cropper {bundleSize.cropper.gzipKb}KB · Full {bundleSize.full
+            .gzipKb}KB gzipped
+        </span>
+      {:else}
+        <span
+          class="hero-badge hero-badge-size"
+          title="Core cropper &lt; 12KB gzipped, full editor &lt; 30KB gzipped"
+        >
+          📦 &lt; 30KB gzipped
+        </span>
+      {/if}
     </div>
     <h1 class="hero-title">
       Image editing,
@@ -152,7 +166,7 @@
     <p class="demo-intro">
       Crop, rotate, apply filters, add a watermark or frame — then hit
       <strong>Done</strong>
-       to export.
+      to export.
     </p>
   </div>
 
