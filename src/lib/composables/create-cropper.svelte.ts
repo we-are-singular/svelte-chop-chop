@@ -13,14 +13,17 @@ import type {
   Rect,
   SizeConstraints,
   StencilProps,
-} from '../core/types.js';
-import { createImageLoader } from '../core/image-loader.svelte.js';
-import { createCropEngine } from '../core/crop-engine.svelte.js';
-import { exportImage } from '../core/export.js';
-import type { Point } from '../core/types.js';
-import type { HandlePosition } from '../core/types.js';
-import { createWheelHandler, createPinchHandler } from '../core/interactions.js';
-import { createKeyboardHandler } from '../core/keyboard.js';
+} from "../core/types.js";
+import { createImageLoader } from "../core/image-loader.svelte.js";
+import { createCropEngine } from "../core/crop-engine.svelte.js";
+import { exportImage } from "../core/export.js";
+import type { Point } from "../core/types.js";
+import type { HandlePosition } from "../core/types.js";
+import {
+  createWheelHandler,
+  createPinchHandler,
+} from "../core/interactions.js";
+import { createKeyboardHandler } from "../core/keyboard.js";
 
 const DEFAULT_TRANSFORM = {
   rotation: 0,
@@ -39,10 +42,12 @@ export interface CropperOptions {
   grid?: GridType;
   transitions?: boolean;
   readOnly?: boolean;
+  /** Export shape: 'rect' (default) or 'circle'. Use 'circle' when stencil is CircleStencil. */
+  shape?: "rect" | "circle";
 }
 
 export interface CropperReturn {
-  get image(): import('../core/types.js').LoadedImage | null;
+  get image(): import("../core/types.js").LoadedImage | null;
   get loading(): boolean;
   get error(): Error | null;
   get ready(): boolean;
@@ -80,7 +85,7 @@ export function createCropper(options: CropperOptions = {}): CropperReturn {
     onChange: () => {},
   });
 
-  const grid = options.grid ?? 'rule-of-thirds';
+  const grid = options.grid ?? "rule-of-thirds";
   const transitions = options.transitions ?? true;
 
   let canvasEl: HTMLCanvasElement | null = null;
@@ -148,13 +153,13 @@ export function createCropper(options: CropperOptions = {}): CropperReturn {
           if (!options.readOnly) engine.scaleBy(scale);
         },
       });
-      container.addEventListener('pointerdown', pinch.onpointerdown, true);
-      container.addEventListener('pointermove', pinch.onpointermove, true);
-      container.addEventListener('pointerup',   pinch.onpointerup,   true);
+      container.addEventListener("pointerdown", pinch.onpointerdown, true);
+      container.addEventListener("pointermove", pinch.onpointermove, true);
+      container.addEventListener("pointerup", pinch.onpointerup, true);
       pinchCleanup = () => {
-        container.removeEventListener('pointerdown', pinch.onpointerdown, true);
-        container.removeEventListener('pointermove', pinch.onpointermove, true);
-        container.removeEventListener('pointerup',   pinch.onpointerup,   true);
+        container.removeEventListener("pointerdown", pinch.onpointerdown, true);
+        container.removeEventListener("pointermove", pinch.onpointermove, true);
+        container.removeEventListener("pointerup", pinch.onpointerup, true);
       };
     }
   }
@@ -176,7 +181,7 @@ export function createCropper(options: CropperOptions = {}): CropperReturn {
     canvasEl.style.width = `${w}px`;
     canvasEl.style.height = `${h}px`;
 
-    const ctx = canvasEl.getContext('2d');
+    const ctx = canvasEl.getContext("2d");
     if (!ctx) return;
 
     const img = loader.image;
@@ -190,7 +195,7 @@ export function createCropper(options: CropperOptions = {}): CropperReturn {
       imgRect.x,
       imgRect.y,
       imgRect.width,
-      imgRect.height
+      imgRect.height,
     );
     ctx.restore();
   }
@@ -227,15 +232,59 @@ export function createCropper(options: CropperOptions = {}): CropperReturn {
 
   /** Keyboard handler: arrow keys move the stencil 1 px (10 px with Shift). */
   const keyboard = createKeyboardHandler([
-    { key: 'ArrowLeft',  action: () => { if (!options.readOnly) engine.moveBy({ x: -1, y: 0 }); } },
-    { key: 'ArrowRight', action: () => { if (!options.readOnly) engine.moveBy({ x: 1,  y: 0 }); } },
-    { key: 'ArrowUp',    action: () => { if (!options.readOnly) engine.moveBy({ x: 0, y: -1 }); } },
-    { key: 'ArrowDown',  action: () => { if (!options.readOnly) engine.moveBy({ x: 0,  y: 1 }); } },
-    { key: 'ArrowLeft',  shift: true, action: () => { if (!options.readOnly) engine.moveBy({ x: -10, y: 0 }); } },
-    { key: 'ArrowRight', shift: true, action: () => { if (!options.readOnly) engine.moveBy({ x: 10,  y: 0 }); } },
-    { key: 'ArrowUp',    shift: true, action: () => { if (!options.readOnly) engine.moveBy({ x: 0, y: -10 }); } },
-    { key: 'ArrowDown',  shift: true, action: () => { if (!options.readOnly) engine.moveBy({ x: 0,  y: 10 }); } },
-    { key: '0',          action: () => engine.fitToImage() },
+    {
+      key: "ArrowLeft",
+      action: () => {
+        if (!options.readOnly) engine.moveBy({ x: -1, y: 0 });
+      },
+    },
+    {
+      key: "ArrowRight",
+      action: () => {
+        if (!options.readOnly) engine.moveBy({ x: 1, y: 0 });
+      },
+    },
+    {
+      key: "ArrowUp",
+      action: () => {
+        if (!options.readOnly) engine.moveBy({ x: 0, y: -1 });
+      },
+    },
+    {
+      key: "ArrowDown",
+      action: () => {
+        if (!options.readOnly) engine.moveBy({ x: 0, y: 1 });
+      },
+    },
+    {
+      key: "ArrowLeft",
+      shift: true,
+      action: () => {
+        if (!options.readOnly) engine.moveBy({ x: -10, y: 0 });
+      },
+    },
+    {
+      key: "ArrowRight",
+      shift: true,
+      action: () => {
+        if (!options.readOnly) engine.moveBy({ x: 10, y: 0 });
+      },
+    },
+    {
+      key: "ArrowUp",
+      shift: true,
+      action: () => {
+        if (!options.readOnly) engine.moveBy({ x: 0, y: -10 });
+      },
+    },
+    {
+      key: "ArrowDown",
+      shift: true,
+      action: () => {
+        if (!options.readOnly) engine.moveBy({ x: 0, y: 10 });
+      },
+    },
+    { key: "0", action: () => engine.fitToImage() },
   ]);
 
   function handleWheel(event: WheelEvent): void {
@@ -252,17 +301,19 @@ export function createCropper(options: CropperOptions = {}): CropperReturn {
 
   async function doExport(opts?: ExportOptions): Promise<ExportResult> {
     if (!loader.image) {
-      throw new Error('No image loaded');
+      throw new Error("No image loaded");
     }
-    return exportImage(
-      loader.image,
-      engine.coordinates,
-      DEFAULT_TRANSFORM,
-      opts
-    );
+    const shape = opts?.shape ?? options.shape ?? "rect";
+    return exportImage(loader.image, engine.coordinates, DEFAULT_TRANSFORM, {
+      ...opts,
+      shape,
+    });
   }
 
-  function getResult(): { coordinates: CropCoordinates; canvas?: HTMLCanvasElement } {
+  function getResult(): {
+    coordinates: CropCoordinates;
+    canvas?: HTMLCanvasElement;
+  } {
     return {
       coordinates: engine.coordinates,
       canvas: canvasEl ?? undefined,

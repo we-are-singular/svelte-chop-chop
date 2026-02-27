@@ -99,6 +99,7 @@
     get readOnly() {
       return readOnly;
     },
+    shape: StencilComponent === CircleStencil ? "circle" : "rect",
   });
 
   /** Only show grid lines while the user is actively interacting (dragging/resizing). */
