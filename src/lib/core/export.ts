@@ -10,7 +10,7 @@ import type {
   ExportResult,
   LoadedImage,
   TransformState,
-} from './types.js';
+} from "./types.js";
 
 const DEFAULT_TRANSFORM: TransformState = {
   rotation: 0,
@@ -21,22 +21,23 @@ const DEFAULT_TRANSFORM: TransformState = {
 };
 
 function formatToExtension(format: string): string {
-  if (format === 'image/jpeg') return 'jpg';
-  if (format === 'image/png') return 'png';
-  if (format === 'image/webp') return 'webp';
-  return 'png';
+  if (format === "image/jpeg") return "jpg";
+  if (format === "image/png") return "png";
+  if (format === "image/webp") return "webp";
+  return "png";
 }
 
 function canvasToBlob(
   canvas: HTMLCanvasElement,
   type: string,
-  quality: number
+  quality: number,
 ): Promise<Blob> {
   return new Promise((resolve, reject) => {
     canvas.toBlob(
-      (blob) => (blob ? resolve(blob) : reject(new Error('Canvas toBlob failed'))),
+      (blob) =>
+        blob ? resolve(blob) : reject(new Error("Canvas toBlob failed")),
       type,
-      quality
+      quality,
     );
   });
 }
@@ -53,12 +54,13 @@ export async function exportImage(
   image: LoadedImage,
   crop: CropCoordinates,
   transforms: TransformState = DEFAULT_TRANSFORM,
-  options: ExportOptions = {}
+  options: ExportOptions = {},
 ): Promise<ExportResult> {
-  const { format = 'image/png', quality = 0.92, maxWidth, maxHeight } = options;
+  const { format = "image/png", quality = 0.92, maxWidth, maxHeight } = options;
 
-  let outputWidth = crop.pixels.width;
-  let outputHeight = crop.pixels.height;
+  // crop.pixels are in original image space (full resolution), not viewport
+  let outputWidth = Math.round(crop.pixels.width);
+  let outputHeight = Math.round(crop.pixels.height);
 
   if (maxWidth && outputWidth > maxWidth) {
     const scale = maxWidth / outputWidth;
@@ -71,11 +73,11 @@ export async function exportImage(
     outputWidth = Math.round(outputWidth * scale);
   }
 
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   canvas.width = outputWidth;
   canvas.height = outputHeight;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) throw new Error('Could not get canvas 2d context');
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Could not get canvas 2d context");
 
   ctx.save();
   ctx.translate(outputWidth / 2, outputHeight / 2);
@@ -83,17 +85,12 @@ export async function exportImage(
   ctx.scale(transforms.flipX ? -1 : 1, transforms.flipY ? -1 : 1);
   ctx.translate(-outputWidth / 2, -outputHeight / 2);
 
-  ctx.drawImage(
-    image.element,
-    crop.pixels.x,
-    crop.pixels.y,
-    crop.pixels.width,
-    crop.pixels.height,
-    0,
-    0,
-    outputWidth,
-    outputHeight
-  );
+  const sx = Math.round(crop.pixels.x);
+  const sy = Math.round(crop.pixels.y);
+  const sw = Math.round(crop.pixels.width);
+  const sh = Math.round(crop.pixels.height);
+
+  ctx.drawImage(image.element, sx, sy, sw, sh, 0, 0, outputWidth, outputHeight);
   ctx.restore();
 
   if (options.postProcess) {
@@ -101,15 +98,21 @@ export async function exportImage(
   }
 
   // Apply circular mask if shape is "circle"
-  if (options.shape === 'circle') {
-    const maskCanvas = document.createElement('canvas');
+  if (options.shape === "circle") {
+    const maskCanvas = document.createElement("canvas");
     maskCanvas.width = outputWidth;
     maskCanvas.height = outputHeight;
-    const maskCtx = maskCanvas.getContext('2d')!;
+    const maskCtx = maskCanvas.getContext("2d")!;
 
     // Draw circular clip, then composite the image into it
     maskCtx.beginPath();
-    maskCtx.arc(outputWidth / 2, outputHeight / 2, Math.min(outputWidth, outputHeight) / 2, 0, Math.PI * 2);
+    maskCtx.arc(
+      outputWidth / 2,
+      outputHeight / 2,
+      Math.min(outputWidth, outputHeight) / 2,
+      0,
+      Math.PI * 2,
+    );
     maskCtx.closePath();
     maskCtx.clip();
     maskCtx.drawImage(canvas, 0, 0);
@@ -119,18 +122,25 @@ export async function exportImage(
     ctx.drawImage(maskCanvas, 0, 0);
   }
 
-  const validFormats = ['image/jpeg', 'image/png', 'image/webp'] as const;
+  const validFormats = ["image/jpeg", "image/png", "image/webp"] as const;
   // Force PNG for circle shape since JPEG doesn't support transparency
-  const resolvedFormat = options.shape === 'circle' && format === 'image/jpeg' ? 'image/png' : format;
-  const exportFormat: ExportFormat = validFormats.includes(resolvedFormat as ExportFormat)
+  const resolvedFormat =
+    options.shape === "circle" && format === "image/jpeg"
+      ? "image/png"
+      : format;
+  const exportFormat: ExportFormat = validFormats.includes(
+    resolvedFormat as ExportFormat,
+  )
     ? (resolvedFormat as ExportFormat)
-    : 'image/png';
+    : "image/png";
   const blob = await canvasToBlob(canvas, exportFormat, quality);
 
   return {
     canvas,
     blob,
-    file: new File([blob], `export.${formatToExtension(resolvedFormat)}`, { type: resolvedFormat }),
+    file: new File([blob], `export.${formatToExtension(resolvedFormat)}`, {
+      type: resolvedFormat,
+    }),
     dataURL: canvas.toDataURL(resolvedFormat, quality),
     coordinates: crop,
     transforms,

@@ -212,6 +212,25 @@ describe("createCropEngine", () => {
     });
   });
 
+  it("pixels are in original image space (full-resolution export)", () => {
+    // 5000x3000 image displayed at 900x540 viewport - export must use original pixels
+    runWithImage(
+      (engine) => {
+        engine.fitToImage();
+        const coords = engine.coordinates;
+        expect(coords.pixels.width).toBe(5000);
+        expect(coords.pixels.height).toBe(3000);
+        expect(coords.pixels.x).toBe(0);
+        expect(coords.pixels.y).toBe(0);
+      },
+      {},
+      5000,
+      3000,
+      900,
+      540,
+    );
+  });
+
   it("cropOutsideImage allows crop beyond image bounds", () => {
     runWithImage(
       (engine) => {

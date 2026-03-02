@@ -173,7 +173,7 @@
   <div class="demo-stage">
     <div class="demo-editor">
       <ImageEditor
-        src="https://picsum.photos/id/10/900/600"
+        src="https://picsum.photos/id/10/1920/1080"
         plugins={allPlugins}
         style="height: 600px; width: 100%;"
         onexport={handleExport}
