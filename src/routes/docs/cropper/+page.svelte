@@ -426,6 +426,14 @@
 <h2>Export</h2>
 
 <p>
+  Export uses <strong>full resolution</strong> — the output is rendered from the
+  original image pixels (<code>coordinates.pixels</code>), not the viewport. A
+  5000×3000 image displayed at 900×540 will export at the cropped region's
+  actual pixel dimensions (unless <code>maxWidth</code> / <code>maxHeight</code>
+  downscale it).
+</p>
+
+<p>
   Bind <code>this</code>
   to get a reference to the cropper instance and call
   <code>export()</code>

@@ -101,7 +101,7 @@ npm install @we-are-singular/svelte-chop-chop
 import { createCropper } from "@we-are-singular/svelte-chop-chop/headless";
 import { createImageEditor } from "@we-are-singular/svelte-chop-chop";
 
-// Lightweight cropper
+// Lightweight cropper (export uses full resolution — original image pixels)
 const cropper = createCropper({ aspectRatio: 16 / 9 });
 await cropper.loadImage("/photo.jpg");
 const result = await cropper.export({ format: "image/webp", quality: 0.9 });

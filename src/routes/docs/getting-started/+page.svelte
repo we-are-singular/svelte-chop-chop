@@ -40,7 +40,8 @@
   Import the <code>Cropper</code>
   component and pass it an image source. Use the
   <code>toolbar</code>
-   snippet to add an export button:
+  snippet to add an export button. Export uses full resolution (original image
+  pixels), so large images export at their cropped region's actual dimensions.
 </p>
 
 {#snippet cropToolbar(cropper)}
