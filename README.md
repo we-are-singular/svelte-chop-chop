@@ -112,7 +112,7 @@ await editor.loadImage("/photo.jpg");
 editor.applyFilter("clarendon");
 editor.rotate(90);
 const result = await editor.export({ format: "image/webp", quality: 0.9 });
-// result.blob, result.dataURL, result.canvas, result.coordinates
+// result.blob, result.dataURL, result.canvas, result.coordinates, result.filters
 ```
 
 ---

@@ -144,6 +144,8 @@ export interface ExportResult {
   coordinates: CropCoordinates;
   transforms: TransformState;
   originalSize: Size;
+  /** Filter state applied at export (ImageEditor only; undefined for Cropper) */
+  filters?: FilterState;
 }
 
 // ─── Stencil Contract ───────────────────────────────────────

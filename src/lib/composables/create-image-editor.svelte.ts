@@ -355,8 +355,13 @@ export function createImageEditor(
         merged,
       );
 
-      emit("export:complete", result);
-      return result;
+      const resultWithFilters: ExportResult = {
+        ...result,
+        filters: { ...filters },
+      };
+
+      emit("export:complete", resultWithFilters);
+      return resultWithFilters;
     } catch (err) {
       emit("export:error", err instanceof Error ? err : new Error(String(err)));
       throw err;
@@ -372,6 +377,7 @@ export function createImageEditor(
         width: loader.image.naturalWidth,
         height: loader.image.naturalHeight,
       },
+      filters: { ...filters },
     } as ExportResult;
   }
 

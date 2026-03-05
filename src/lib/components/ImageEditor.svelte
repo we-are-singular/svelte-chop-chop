@@ -255,7 +255,7 @@
             aria-label="Image preview"
           ></canvas>
 
-          {#if editor.imageRect.width > 0}
+          {#if editor.imageRect.width > 0 && editor.activeTab === null}
             {#if shape === "circle"}
               <CropOverlay
                 rect={editor.crop.viewport}

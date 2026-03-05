@@ -486,6 +486,7 @@
   coordinates: CropCoordinates;
   transforms: TransformState;
   originalSize: Size;
+  filters?: FilterState;  // ImageEditor only; undefined for Cropper
 &#125;</code></pre>
 
 <h2>Presets</h2>

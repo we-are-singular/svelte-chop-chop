@@ -24,6 +24,12 @@
   filter, tune, resize, frame and watermark — all in one component.
 </p>
 
+<p>
+  The crop stencil (overlay and handles) is shown only when the crop tab is
+  active. When you switch to filters, finetune, frame, or watermark, the stencil
+  is hidden so you can focus on the current tool.
+</p>
+
 <h2>Import</h2>
 
 <pre><code>import &#123; ImageEditor &#125; from '@we-are-singular/svelte-chop-chop';</code></pre>
@@ -298,13 +304,12 @@ const result = await editor.export(&#123;
 
 <p>
   Export renders at <strong>full resolution</strong>
-  using the original image pixels. The viewport size does not limit output — a
-  large image displayed small will export at its cropped region's actual
-  dimensions. Use
+  using the original image pixels. The viewport size does not limit output — a large
+  image displayed small will export at its cropped region's actual dimensions. Use
   <code>maxWidth</code>
   /
   <code>maxHeight</code>
-   to downscale if needed.
+  to downscale if needed.
 </p>
 
 <table>
@@ -373,4 +378,5 @@ const result = await editor.export(&#123;
   coordinates: CropCoordinates;
   transforms: TransformState;
   originalSize: &#123; width: number; height: number &#125;;
+  filters?: FilterState;  // Filter state applied at export
 &#125;</code></pre>
