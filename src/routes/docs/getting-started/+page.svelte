@@ -40,8 +40,8 @@
   Import the <code>Cropper</code>
   component and pass it an image source. Use the
   <code>toolbar</code>
-  snippet to add an export button. Export uses full resolution (original image
-  pixels), so large images export at their cropped region's actual dimensions.
+  snippet to add an export button. Export uses full resolution (original image pixels),
+  so large images export at their cropped region's actual dimensions.
 </p>
 
 {#snippet cropToolbar(cropper)}
@@ -104,7 +104,7 @@
 
 <p>
   The <code>ImageEditor</code>
-   component bundles crop, filters, finetune, rotate, resize, frame and watermark
+  component bundles crop, filters, finetune, rotate, resize, frame and watermark
   panels:
 </p>
 
@@ -177,7 +177,7 @@
   See <a href="/docs/cropper">Cropper</a>
   and
   <a href="/docs/custom-stencil">Custom Stencil</a>
-   for details.
+  for details.
 </p>
 
 <h2>CSS themes</h2>

@@ -297,10 +297,14 @@ const result = await editor.export(&#123;
 <h2>Export options</h2>
 
 <p>
-  Export renders at <strong>full resolution</strong> using the original image
-  pixels. The viewport size does not limit output — a large image displayed
-  small will export at its cropped region's actual dimensions. Use
-  <code>maxWidth</code> / <code>maxHeight</code> to downscale if needed.
+  Export renders at <strong>full resolution</strong>
+  using the original image pixels. The viewport size does not limit output — a
+  large image displayed small will export at its cropped region's actual
+  dimensions. Use
+  <code>maxWidth</code>
+  /
+  <code>maxHeight</code>
+   to downscale if needed.
 </p>
 
 <table>
