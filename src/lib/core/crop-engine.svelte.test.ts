@@ -30,6 +30,21 @@ function runWithImage(
   }, opts);
 }
 
+function runWithContainerFirst(
+  fn: (engine: ReturnType<typeof createCropEngine>) => void,
+  opts: CropEngineOptions = {},
+  imageW = 800,
+  imageH = 600,
+  containerW = 400,
+  containerH = 300,
+) {
+  run((engine) => {
+    engine.setContainerSize({ width: containerW, height: containerH });
+    engine.setImageSize({ width: imageW, height: imageH });
+    fn(engine);
+  }, opts);
+}
+
 describe("createCropEngine", () => {
   it("initialises with default state", () => {
     run((engine) => {
@@ -76,6 +91,67 @@ describe("createCropEngine", () => {
         );
       },
       { initialCropScale: 0.8 },
+    );
+  });
+
+  it("free crop with initialCropScale 1 fits the real image after container-first init", () => {
+    runWithContainerFirst((engine) => {
+      expect(engine.crop).toEqual(engine.imageRect);
+      expect(engine.imageRect).toEqual({ x: 0, y: 0, width: 400, height: 300 });
+    });
+  });
+
+  it("free crop with initialCropScale 0.8 scales from the real fitted image bounds", () => {
+    runWithContainerFirst(
+      (engine) => {
+        expect(engine.imageRect).toEqual({
+          x: 0,
+          y: 50,
+          width: 400,
+          height: 200,
+        });
+        expect(engine.crop).toEqual({ x: 40, y: 70, width: 320, height: 160 });
+      },
+      { initialCropScale: 0.8 },
+      1200,
+      600,
+      400,
+      300,
+    );
+  });
+
+  it("preserves explicit initialCrop after image dimensions are loaded", () => {
+    runWithContainerFirst(
+      (engine) => {
+        expect(engine.crop).toEqual({ x: 20, y: 70, width: 180, height: 120 });
+      },
+      {
+        initialCrop: { x: 20, y: 70, width: 180, height: 120 },
+        initialCropScale: 1,
+      },
+      1200,
+      600,
+      400,
+      300,
+    );
+  });
+
+  it("fixed aspect ratios still fit correctly after image dimensions are loaded", () => {
+    runWithContainerFirst(
+      (engine) => {
+        expect(engine.imageRect).toEqual({
+          x: 0,
+          y: 50,
+          width: 400,
+          height: 200,
+        });
+        expect(engine.crop).toEqual({ x: 100, y: 50, width: 200, height: 200 });
+      },
+      { aspectRatio: 1, initialCropScale: 1 },
+      1200,
+      600,
+      400,
+      300,
     );
   });
 
