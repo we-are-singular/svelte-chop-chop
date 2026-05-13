@@ -34,6 +34,7 @@ export interface CropEngineOptions {
 }
 
 const DEFAULT_RECT: Rect = { x: 0, y: 0, width: 0, height: 0 };
+type CropRectSource = "none" | "auto" | "explicit" | "user";
 
 /**
  * Create crop engine composable.
@@ -43,9 +44,11 @@ export function createCropEngine(options: CropEngineOptions = {}) {
   let cropRect = $state<Rect>({ ...DEFAULT_RECT });
   let aspectRatio = $state<AspectRatio>(options.aspectRatio ?? null);
   let interacting = $state(false);
-  let imageSize = $state<Size>({ width: 1, height: 1 });
+  let imageSize = $state<Size>({ width: 0, height: 0 });
   let imageRect = $state<Rect>({ ...DEFAULT_RECT });
-  let containerSize = $state<Size>({ width: 1, height: 1 });
+  let containerSize = $state<Size>({ width: 0, height: 0 });
+  let cropRectSource: CropRectSource = "none";
+  let autoInitializedImageSize: Size | null = null;
 
   const cropOutsideImage = options.cropOutsideImage ?? false;
   const bounds = $derived(
@@ -98,67 +101,111 @@ export function createCropEngine(options: CropEngineOptions = {}) {
 
   function setImageSize(size: Size): void {
     imageSize = size;
+    refreshImageRectAndCrop();
   }
 
   function setContainerSize(size: Size): void {
     containerSize = size;
-    if (imageSize.width > 0 && imageSize.height > 0) {
-      imageRect = fitImageToContainer(imageSize, size);
-      initCropRectIfNeeded();
+    refreshImageRectAndCrop();
+  }
+
+  function hasRenderableImageSize(size: Size): boolean {
+    return size.width > 0 && size.height > 0;
+  }
+
+  function cloneSize(size: Size): Size {
+    return { width: size.width, height: size.height };
+  }
+
+  function sizeEquals(a: Size | null, b: Size): boolean {
+    return a !== null && a.width === b.width && a.height === b.height;
+  }
+
+  function hasExplicitInitialCrop(): boolean {
+    return !!(
+      options.initialCrop &&
+      ((options.initialCrop.width != null && options.initialCrop.width > 0) ||
+        (options.initialCrop.height != null && options.initialCrop.height > 0))
+    );
+  }
+
+  function setCropRect(rect: Rect, source: CropRectSource): void {
+    cropRect = rect;
+    cropRectSource = source;
+    autoInitializedImageSize = source === "auto" ? cloneSize(imageSize) : null;
+  }
+
+  function applyExplicitInitialCrop(): void {
+    const next = { ...bounds, ...options.initialCrop };
+    const ratio = getAspectRatioValue(aspectRatio);
+    setCropRect(
+      ratio !== null
+        ? constrainRectToAspectRatio(next, aspectRatio, bounds)
+        : clampRect(next, bounds),
+      "explicit",
+    );
+  }
+
+  function initAutoCropRect(): void {
+    const scale = options.initialCropScale ?? 1;
+    if (scale > 0 && scale < 1) {
+      fitToImageAtScale(scale, "auto");
+      return;
     }
+
+    fitToImage("auto");
   }
 
   function initCropRectIfNeeded(): void {
-    if (cropRect.width > 0 && cropRect.height > 0) return;
+    if (imageRect.width <= 0 || imageRect.height <= 0) return;
 
-    const scale = options.initialCropScale ?? 1;
-    const hasExplicitCrop =
-      options.initialCrop &&
-      ((options.initialCrop.width != null && options.initialCrop.width > 0) ||
-        (options.initialCrop.height != null && options.initialCrop.height > 0));
-
-    if (hasExplicitCrop) {
-      const next = { ...bounds, ...options.initialCrop };
-      const ratio = getAspectRatioValue(aspectRatio);
-      cropRect =
-        ratio !== null
-          ? constrainRectToAspectRatio(next, aspectRatio, bounds)
-          : clampRect(next, bounds);
-      return;
-    }
-
-    if (scale > 0 && scale < 1) {
-      const w = bounds.width * scale;
-      const h = bounds.height * scale;
-      let rect: Rect = {
-        x: bounds.x + (bounds.width - w) / 2,
-        y: bounds.y + (bounds.height - h) / 2,
-        width: w,
-        height: h,
-      };
-      const ratio = getAspectRatioValue(aspectRatio);
-      if (ratio !== null) {
-        rect = fitRectToAspectRatio(rect, ratio, "center");
-        rect = clampRect(rect, bounds);
+    if (hasExplicitInitialCrop()) {
+      if (cropRectSource === "none") {
+        applyExplicitInitialCrop();
       }
-      cropRect = rect;
       return;
     }
 
-    fitToImage();
+    const cropIsEmpty = cropRect.width <= 0 || cropRect.height <= 0;
+    const shouldRefreshAutoCrop =
+      cropRectSource === "auto" &&
+      !sizeEquals(autoInitializedImageSize, imageSize);
+
+    if (!cropIsEmpty && !shouldRefreshAutoCrop) return;
+
+    initAutoCropRect();
   }
 
-  function fitToImage(): void {
+  function refreshImageRectAndCrop(): void {
+    if (
+      !hasRenderableImageSize(imageSize) ||
+      !hasRenderableImageSize(containerSize)
+    ) {
+      return;
+    }
+
+    imageRect = fitImageToContainer(imageSize, containerSize);
+    initCropRectIfNeeded();
+  }
+
+  function fitToImage(source: CropRectSource = "user"): void {
+    if (imageRect.width <= 0 || imageRect.height <= 0) return;
+
     let rect = { ...bounds };
     const ratio = getAspectRatioValue(aspectRatio);
     if (ratio !== null) {
       rect = fitRectToAspectRatio(rect, ratio);
     }
-    cropRect = rect;
+    setCropRect(rect, source);
   }
 
   /** Apply initialCropScale: fit to bounds (with aspect ratio), then scale down from center. */
-  function fitToImageAtScale(scale: number): void {
+  function fitToImageAtScale(
+    scale: number,
+    source: CropRectSource = "user",
+  ): void {
+    if (imageRect.width <= 0 || imageRect.height <= 0) return;
+
     let rect = { ...bounds };
     const ratio = getAspectRatioValue(aspectRatio);
     if (ratio !== null) {
@@ -178,22 +225,25 @@ export function createCropEngine(options: CropEngineOptions = {}) {
         rect = clampRect(rect, bounds);
       }
     }
-    cropRect = rect;
+    setCropRect(rect, source);
   }
 
   function setCrop(rect: Partial<Rect>): void {
     const next = { ...cropRect, ...rect };
-    cropRect = constrainRectToAspectRatio(next, aspectRatio, bounds);
+    setCropRect(constrainRectToAspectRatio(next, aspectRatio, bounds), "user");
   }
 
   function moveBy(delta: Point): void {
-    cropRect = clampRect(
-      {
-        ...cropRect,
-        x: cropRect.x + delta.x,
-        y: cropRect.y + delta.y,
-      },
-      bounds,
+    setCropRect(
+      clampRect(
+        {
+          ...cropRect,
+          x: cropRect.x + delta.x,
+          y: cropRect.y + delta.y,
+        },
+        bounds,
+      ),
+      "user",
     );
   }
 
@@ -233,7 +283,7 @@ export function createCropEngine(options: CropEngineOptions = {}) {
     let newRect = { x, y, width, height };
     newRect = clampRect(newRect, bounds);
     if (newRect.width > 0 && newRect.height > 0) {
-      cropRect = newRect;
+      setCropRect(newRect, "user");
     }
   }
 
@@ -242,11 +292,13 @@ export function createCropEngine(options: CropEngineOptions = {}) {
     const newVal = getAspectRatioValue(ratio);
     if (currentVal === newVal) return;
     aspectRatio = ratio;
+    if (imageRect.width <= 0 || imageRect.height <= 0) return;
+
     const scale = options.initialCropScale ?? 1;
     if (scale > 0 && scale < 1) {
-      fitToImageAtScale(scale);
+      fitToImageAtScale(scale, "auto");
     } else {
-      fitToImage();
+      fitToImage("auto");
     }
   }
 
@@ -282,7 +334,7 @@ export function createCropEngine(options: CropEngineOptions = {}) {
       newRect = clampRect(newRect, imageRect);
     }
     if (newRect.width > 0 && newRect.height > 0) {
-      cropRect = newRect;
+      setCropRect(newRect, "user");
     }
   }
 
