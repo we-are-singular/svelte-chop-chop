@@ -21,7 +21,7 @@
     shape = $bindable("rect"),
     aspectRatio = $bindable(null),
     aspectRatioPresets,
-    initialCropScale = 0.8,
+    initialCropScale = 1,
     exportDefaults,
     onexport,
     style = "",
