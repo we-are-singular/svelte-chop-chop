@@ -97,7 +97,23 @@ export function createCropEngine(options: CropEngineOptions = {}) {
   }
 
   function setImageSize(size: Size): void {
+    const hadPlaceholder = imageSize.width <= 1 && imageSize.height <= 1;
+    const isReal = size.width > 1 || size.height > 1;
     imageSize = size;
+
+    // When real image dimensions arrive and container is already known,
+    // recompute imageRect and reset crop so it re-initialises from real geometry
+    // instead of the stale placeholder-based rect.
+    if (
+      hadPlaceholder &&
+      isReal &&
+      containerSize.width > 1 &&
+      containerSize.height > 1
+    ) {
+      imageRect = fitImageToContainer(size, containerSize);
+      cropRect = { ...DEFAULT_RECT };
+      initCropRectIfNeeded();
+    }
   }
 
   function setContainerSize(size: Size): void {

@@ -240,4 +240,43 @@ describe("createCropEngine", () => {
       { cropOutsideImage: true },
     );
   });
+
+  it("initialCropScale=1 covers full image when container is set before image size", () => {
+    // Reproduces: bindContainer fires before loadImage, so setContainerSize runs
+    // with the 1×1 placeholder image. Without the fix, the crop stays as a square
+    // derived from the placeholder instead of matching the real image bounds.
+    run(
+      (engine) => {
+        // 1. Container is set first (like ResizeObserver firing before image load)
+        engine.setContainerSize({ width: 600, height: 400 });
+        // 2. Image loads later
+        engine.setImageSize({ width: 1920, height: 1080 });
+        engine.setContainerSize({ width: 600, height: 400 });
+
+        const { imageRect, crop } = engine;
+        expect(crop.width).toBeCloseTo(imageRect.width, 0);
+        expect(crop.height).toBeCloseTo(imageRect.height, 0);
+        expect(crop.x).toBeCloseTo(imageRect.x, 0);
+        expect(crop.y).toBeCloseTo(imageRect.y, 0);
+      },
+      { initialCropScale: 1 },
+    );
+  });
+
+  it("initialCropScale=0.8 is correct when container is set before image size", () => {
+    run(
+      (engine) => {
+        engine.setContainerSize({ width: 600, height: 400 });
+        engine.setImageSize({ width: 1920, height: 1080 });
+        engine.setContainerSize({ width: 600, height: 400 });
+
+        const { imageRect, crop } = engine;
+        const expectedW = imageRect.width * 0.8;
+        const expectedH = imageRect.height * 0.8;
+        expect(crop.width).toBeCloseTo(expectedW, 0);
+        expect(crop.height).toBeCloseTo(expectedH, 0);
+      },
+      { initialCropScale: 0.8 },
+    );
+  });
 });
